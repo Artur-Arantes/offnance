@@ -6,7 +6,6 @@
     "packageName": "br.com.projeto.offnance",
     "packageFolder": "br/com/projeto/offnance",
     "serverPort": 8081,
-    "serviceDiscoveryType": "eureka",
     "authenticationType": "jwt",
     "cacheProvider": "infinispan",
     "enableHibernateCache": true,
