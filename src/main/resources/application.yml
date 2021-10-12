@@ -1,0 +1,15 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3307/offnanceapplication?useUnicode=true&characterEncoding=utf8&useSSL=false&useLegacyDatetimeCode=false&serverTimezone=UTC&createDatabaseIfNotExist=true
+    username: root
+    password:
+
+configs:
+  security:
+    authentication:
+      jwt:
+        # This token must be encoded using Base64 and be at least 256 bits long (you can type `openssl rand -base64 64` on your command line to generate a 512 bits one)
+        base64-secret: ZjE5YzQwOWY2NmZiMjkxMWU0MWM4MmViMGZiMzQxMWI5MTUyZjEyZDY5NmU3OTcxYWVhZDRkMzZiNDYzN2VhOTNhOTliY2NmZTg0NTdkZjU3NzU1YWRhMWI3NWQ4YzVlNGU3MmNlNzlkZDQ1MmFkMTcxYTQzNjJhZmFlYWFjZTQ=
+        # Token is valid 24 hours
+        token-validity-in-seconds: 86400
+        token-validity-in-seconds-for-remember-me: 2592000
