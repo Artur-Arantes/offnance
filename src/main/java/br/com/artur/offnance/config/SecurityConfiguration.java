@@ -4,6 +4,7 @@ import br.com.artur.offnance.security.AuthoritiesConstants;
 import br.com.artur.offnance.security.jwt.JWTConfigurer;
 import br.com.artur.offnance.security.jwt.TokenProvider;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -17,6 +18,7 @@ import org.zalando.problem.spring.web.advice.security.SecurityProblemSupport;
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 @Import(SecurityProblemSupport.class)
 @RequiredArgsConstructor
+@ConfigurationProperties(prefix = "security")
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final ConfigProperties properties;

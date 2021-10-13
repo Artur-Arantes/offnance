@@ -62,7 +62,7 @@ CREATE TABLE IF NOT EXISTS tags(
     id_tip BIGINT(20) NOT NULL,
     id_tag BIGINT(20) NOT NULL AUTO_INCREMENT,
     nome_tag VARCHAR(255) NOT NULL,
-    per_tag FLOAT() NOT NULL,
+    per_tag FLOAT(4) NOT NULL,
     CONSTRAINT pk_tags PRIMARY KEY (id_tag),
     CONSTRAINT fk_tags_pessoa FOREIGN KEY (id_pes) REFERENCES pessoa(id_pes),
     CONSTRAINT fk_tags_tipo FOREIGN KEY (id_tip) REFERENCES tipo(id_tip),
