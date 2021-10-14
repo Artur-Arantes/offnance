@@ -1,6 +1,7 @@
 package br.com.artur.offnance.config;
 
-import br.com.artur.offnance.security.AuthoritiesConstants;
+import static br.com.artur.offnance.enums.EnumUserPermission.ADMIN;
+
 import br.com.artur.offnance.security.jwt.JWTConfigurer;
 import br.com.artur.offnance.security.jwt.TokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -51,13 +52,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .antMatchers("/api/authenticate").permitAll()
-                .antMatchers("/api/admin/**").hasAuthority(AuthoritiesConstants.ADMIN)
+                .antMatchers("/api/admin/**").hasAuthority(ADMIN.getRole())
                 .antMatchers("/api/**").authenticated()
                 .antMatchers("/management/health").permitAll()
                 .antMatchers("/management/health/**").permitAll()
                 .antMatchers("/management/info").permitAll()
                 .antMatchers("/management/prometheus").permitAll()
-                .antMatchers("/management/**").hasAuthority(AuthoritiesConstants.ADMIN)
+                .antMatchers("/management/**").hasAuthority(ADMIN.getRole())
                 .and()
                 .apply(securityConfigurerAdapter());
         // @formatter:on
