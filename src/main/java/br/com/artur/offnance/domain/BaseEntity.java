@@ -27,10 +27,10 @@ public abstract class BaseEntity {
 
   protected ZonedDateTime createdAt;
 
-  private ZonedDateTime updateAt;
+  private ZonedDateTime updatedAt;
   @PrePersist
   protected void prePersist() {
-    createdAt = updateAt = ZonedDateTime.now();
+    createdAt = updatedAt = ZonedDateTime.now();
   }
 
   @PreUpdate

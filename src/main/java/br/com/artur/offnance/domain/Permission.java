@@ -28,8 +28,8 @@ import org.springframework.security.core.GrantedAuthority;
 @AttributeOverrides(value = {
     @AttributeOverride(name = "id", column = @Column(name = "id_per")),
     @AttributeOverride(name = "version", column = @Column(name = "ver_per")),
-    @AttributeOverride(name = "createdAt", column = @Column(name = "dat_pes")),
-    @AttributeOverride(name = "updateAt", column = @Column(name = "upd_pes"))
+    @AttributeOverride(name = "createdAt", column = @Column(name = "cre_at_per")),
+    @AttributeOverride(name = "updatedAt", column = @Column(name = "upd_at_per"))
 })
 public class Permission extends BaseEntity implements GrantedAuthority {
 

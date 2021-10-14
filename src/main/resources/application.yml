@@ -1,8 +1,13 @@
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3307/offnanceapplication?useUnicode=true&characterEncoding=utf8&useSSL=false&useLegacyDatetimeCode=false&serverTimezone=UTC&createDatabaseIfNotExist=true
-    username: root
-    password:
+    #url: jdbc:mysql://localhost:3307/offnanceapplication?useUnicode=true&characterEncoding=utf8&useSSL=false&useLegacyDatetimeCode=false&serverTimezone=UTC&createDatabaseIfNotExist=true
+    url: ${DB_URL:}
+
+    #username: root
+    username: ${DB_USERNAME:}
+
+   #password:
+    password: ${DB_PASSWORD:}
 
 configs:
   security:
@@ -13,3 +18,8 @@ configs:
         # Token is valid 24 hours
         token-validity-in-seconds: 86400
         token-validity-in-seconds-for-remember-me: 2592000
+        app-authorization: ${APP_AUTHORIZATION:Offnance}
+        header: ${JWT_HEADER:Authorization}
+        expires-in : ${JWT_EXPIRES_IN:600}
+        secret: ${JWT_SECRET:henriqueeartur}
+        cookie: ${JWT_COOKIE:AUTH-TOKEN}

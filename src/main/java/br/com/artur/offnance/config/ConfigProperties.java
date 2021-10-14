@@ -14,6 +14,21 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class ConfigProperties {
   private Security security;
 
+  public String getCookie(){
+    return this.getSecurity().getAuthentication().getJwt().getCookie();
+  }
+  public Long getExpiresIn(){
+    return this.getSecurity().getAuthentication().getJwt().getExpiresIn();
+  }
+  public String getSecret(){
+    return this.getSecurity().getAuthentication().getJwt().getSecret();
+  }
+  public String getHeader(){
+    return this.getSecurity().getAuthentication().getJwt().getHeader();
+  }
+  public String getAppAuthroization(){
+    return this.getSecurity().getAuthentication().getJwt().getHeader();
+  }
   @ConfigurationProperties(prefix = "security")
   @Getter
   @NoArgsConstructor
@@ -37,19 +52,15 @@ public class ConfigProperties {
       @Setter
       @ConfigurationProperties(prefix = "jwt")
       public static class Jwt {
-        public static final String DEFAULT_SECRET = null;
-        public static final String BASE_64_SECRET = null;
+        private  String appAuthorization;
+        private String header;
+        private Long expiresIn;
+        private String cookie;
         private String secret;
         private String base64Secret;
         private long tokenValidityInSeconds;
         private long tokenValidityInSecondsForRememberMe;
 
-        public Jwt() {
-          this.secret = DEFAULT_SECRET;
-          this.base64Secret = BASE_64_SECRET;
-          this.tokenValidityInSeconds = 1800L;
-          this.tokenValidityInSecondsForRememberMe = 2592000L;
-        }
       }
     }
 

@@ -1,70 +1,84 @@
 package br.com.artur.offnance.config;
 
-import static br.com.artur.offnance.enums.EnumUserPermission.ADMIN;
-
-import br.com.artur.offnance.security.jwt.JWTConfigurer;
-import br.com.artur.offnance.security.jwt.TokenProvider;
-import lombok.RequiredArgsConstructor;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Import;
+import br.com.artur.offnance.enums.EnumEntryPoint;
+import br.com.artur.offnance.security.auth.AuthenticationTokenFilter;
+import br.com.artur.offnance.security.auth.EntryPointAuthenticationRest;
+import br.com.artur.offnance.security.auth.FailedAuthenticationHandler;
+import br.com.artur.offnance.security.auth.LogoutSuccessful;
+import br.com.artur.offnance.security.auth.SuccessfulAuthenticationHandler;
+import br.com.artur.offnance.service.imp.CustomUserDetailsServiceImp;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter;
-import org.zalando.problem.spring.web.advice.security.SecurityProblemSupport;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
-@EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
-@Import(SecurityProblemSupport.class)
-@RequiredArgsConstructor
-@ConfigurationProperties(prefix = "security")
+@Configuration
+@EnableGlobalMethodSecurity(prePostEnabled = true)
+@DependsOn("passwordEncoder")
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    private final ConfigProperties properties;
+  @Autowired
+  private ConfigProperties configProperties;
 
-    private final TokenProvider tokenProvider;
-    private final SecurityProblemSupport problemSupport;
+  @Autowired
+  private CustomUserDetailsServiceImp customUserDetailsServiceImp;
 
-    @Override
-    public void configure(HttpSecurity http) throws Exception {
-        // @formatter:off
-        http
-                .csrf()
-                .disable()
-                .exceptionHandling()
-                .authenticationEntryPoint(problemSupport)
-                .accessDeniedHandler(problemSupport)
-                .and()
-                .headers()
-                .contentSecurityPolicy(properties.getSecurity().getContentSecurityPolicy())
-                .and()
-                .referrerPolicy(ReferrerPolicyHeaderWriter.ReferrerPolicy.STRICT_ORIGIN_WHEN_CROSS_ORIGIN)
-                .and()
-                .featurePolicy("geolocation 'none'; midi 'none'; sync-xhr 'none'; microphone 'none'; camera 'none'; magnetometer 'none'; gyroscope 'none'; fullscreen 'self'; payment 'none'")
-                .and()
-                .frameOptions()
-                .deny()
-                .and()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .authorizeRequests()
-                .antMatchers("/api/authenticate").permitAll()
-                .antMatchers("/api/admin/**").hasAuthority(ADMIN.getRole())
-                .antMatchers("/api/**").authenticated()
-                .antMatchers("/management/health").permitAll()
-                .antMatchers("/management/health/**").permitAll()
-                .antMatchers("/management/info").permitAll()
-                .antMatchers("/management/prometheus").permitAll()
-                .antMatchers("/management/**").hasAuthority(ADMIN.getRole())
-                .and()
-                .apply(securityConfigurerAdapter());
-        // @formatter:on
-    }
+  @Autowired
+  private EntryPointAuthenticationRest entryPointAuthenticationRest;
 
-    private JWTConfigurer securityConfigurerAdapter() {
-        return new JWTConfigurer(tokenProvider);
-    }
+  @Autowired
+  private LogoutSuccessful logoutSuccessful;
+
+  @Autowired
+  private PasswordEncoder passwordEncoder;
+
+  @Autowired
+  private SuccessfulAuthenticationHandler successfulAuthenticationHandler;
+
+  @Autowired
+  private FailedAuthenticationHandler failedAuthenticationHandler;
+
+  @Bean
+  public AuthenticationTokenFilter jwtAuthenticationTokenFilter() throws Exception {
+    return new AuthenticationTokenFilter();
+  }
+
+  @Bean
+  @Override
+  public AuthenticationManager authenticationManagerBean() throws Exception {
+    return super.authenticationManagerBean();
+  }
+
+  @Autowired
+  public void configureGlobal(AuthenticationManagerBuilder authenticationManagerBuilder)
+      throws Exception {
+    authenticationManagerBuilder.userDetailsService(customUserDetailsServiceImp)
+        .passwordEncoder(passwordEncoder);
+
+  }
+
+  @Override
+  protected void configure(HttpSecurity httpSecurity) throws Exception {
+    httpSecurity.csrf().disable().sessionManagement()
+        .sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+        .exceptionHandling().authenticationEntryPoint(entryPointAuthenticationRest).and()
+        .authorizeRequests().anyRequest().authenticated().and()
+        .addFilterBefore(jwtAuthenticationTokenFilter(), BasicAuthenticationFilter.class)
+        .formLogin().loginPage(EnumEntryPoint.LOGIN_ROUTE.getRoute())
+        .successHandler(successfulAuthenticationHandler)
+        .failureHandler(failedAuthenticationHandler).and().logout()
+        .logoutRequestMatcher(new AntPathRequestMatcher(EnumEntryPoint.TURN_OFF_ROUTE.getRoute()))
+        .logoutSuccessHandler(logoutSuccessful).deleteCookies(configProperties.getCookie());
+
+  }
+
 }
