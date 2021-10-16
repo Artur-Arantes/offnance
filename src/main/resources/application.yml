@@ -1,4 +1,10 @@
 spring:
+  flyway:
+    baselineOnMigrate: true
+    check-location: true
+    locations: classpath:db/migration
+    schemas: public
+    enabled: true
   datasource:
     url: jdbc:mysql://localhost:3307/offnanceapplication?useUnicode=true&characterEncoding=utf8&useSSL=false&useLegacyDatetimeCode=false&serverTimezone=UTC&createDatabaseIfNotExist=true
     username: root
