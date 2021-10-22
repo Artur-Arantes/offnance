@@ -10,7 +10,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -56,13 +55,10 @@ public class AuthenticationTokenFilter extends OncePerRequestFilter {
 
     String tokenDeAutorizacao = tokenHelper.getToken(request);
     if (tokenDeAutorizacao != null && !routeToMiss(request, routeToMiss)) {
-      // retorna o usuário do token
       try {
-        String user = tokenHelper.getUsuarioDoToken(tokenDeAutorizacao);
-        // pega o usuário
-        UserDetails userDetails = userDetailsService.loadUserByUsername(user);
-        // Cria Autenticação
-        TokenBasedAuthentication authetication = new TokenBasedAuthentication(userDetails);
+        final var user = tokenHelper.getUsernameFromToken(tokenDeAutorizacao);
+        final var userDetails = userDetailsService.loadUserByUsername(user);
+        final var authetication = new TokenBasedAuthentication(userDetails);
         authetication.setToken(tokenDeAutorizacao);
         SecurityContextHolder.getContext().setAuthentication(authetication);
       } catch (Exception e) {

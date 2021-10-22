@@ -6,53 +6,51 @@ import br.com.artur.offnance.domain.TokenState;
 import br.com.artur.offnance.domain.User;
 import br.com.artur.offnance.security.TokenHelper;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.IOException;
-import javax.servlet.ServletException;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
 @Component
 public class SuccessfulAuthenticationHandler extends SimpleUrlAuthenticationSuccessHandler {
 
-  private ConfigProperties configProperties;
+    @Autowired
+    private ConfigProperties configProperties;
 
+    @Autowired
+    TokenHelper tokenHelper;
 
-  @Autowired
-  TokenHelper tokenHelper;
+    @Autowired
+    ObjectMapper objectMapper;
 
-  @Autowired
-  ObjectMapper objectMapper;
+    @Override
+    public void onAuthenticationSuccess(final HttpServletRequest request,
+                                        final HttpServletResponse response,
+                                        final Authentication authentication) throws IOException {
+        clearAuthenticationAttributes(request);
+        final var user = (User) authentication.getPrincipal();
 
-  @Override
-  public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
-                                      Authentication authentication) throws IOException,
-      ServletException {
-    clearAuthenticationAttributes(request);
-    User user = (User) authentication.getPrincipal();
+        final var jws = tokenHelper.create(user.getUsername());
+        Cookie authCookie = new Cookie(configProperties.getCookie(), (jws));
 
-    String jws = tokenHelper.makeToken(user.getUsername());
+        authCookie.setHttpOnly(true);
 
-    // Cria o token de autorização para o cookie
-    Cookie authCookie = new Cookie(configProperties.getCookie(), (jws));
+        authCookie.setMaxAge(configProperties.getExpiresIn().intValue());
 
-    authCookie.setHttpOnly(true);
+        authCookie.setPath("/");
+        // Adiciona o cookie na resposta
+        response.addCookie(authCookie);
 
-    authCookie.setMaxAge(configProperties.getExpiresIn().intValue());
+        // Adiciona o JWT no header também
+        final var userTokenState = new TokenState(jws, configProperties.getExpiresIn());
+        final var jwtResponse = objectMapper.writeValueAsString(userTokenState);
+        response.setContentType("application/json");
+        response.getWriter().write(jwtResponse);
 
-    authCookie.setPath("/");
-    // Adiciona o cookie na resposta
-    response.addCookie(authCookie);
-
-    // Adiciona o JWT no header também
-    TokenState userTokenState = new TokenState(jws, configProperties.getExpiresIn());
-    String jwtResponse = objectMapper.writeValueAsString(userTokenState);
-    response.setContentType("application/json");
-    response.getWriter().write(jwtResponse);
-
-  }
+    }
 }

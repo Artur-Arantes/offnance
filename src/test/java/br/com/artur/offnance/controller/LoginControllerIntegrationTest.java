@@ -15,6 +15,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Testcontainers
+@DisplayName("Teste para integração de login")
 public class LoginControllerIntegrationTest {
 
   @LocalServerPort
@@ -57,7 +58,7 @@ public class LoginControllerIntegrationTest {
           .when()
           .post("/api/login")
           .then()
-          .statusCode(HttpStatus.BAD_REQUEST.value());
+          .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
 
   }
