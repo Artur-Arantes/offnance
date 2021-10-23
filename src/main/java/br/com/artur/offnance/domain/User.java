@@ -1,7 +1,6 @@
 package br.com.artur.offnance.domain;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-
 import com.sun.istack.NotNull;
 import java.util.Collection;
 import java.util.List;
@@ -30,7 +29,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 @Table(name = "usuario")
 @Entity
 @Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(of = "id")
@@ -44,31 +42,31 @@ import org.springframework.security.core.userdetails.UserDetails;
 @ToString
 public class User extends BaseEntity implements UserDetails {
 
-  @OneToOne(fetch = FetchType.EAGER, targetEntity = Person.class)
+  @OneToOne(fetch = FetchType.LAZY, targetEntity = Person.class)
   @JsonManagedReference
-  @JoinColumn(name="id_pes")
+  @JoinColumn(name = "id_pes")
   private Person person;
 
   @NotNull
   @NotEmpty
-  @Column(name="sen_usu")
-  @Size(min =3)
+  @Column(name = "sen_usu")
+  @Size(min = 3)
   @Getter(onMethod = @__(@Override))
   @Setter
   private String password;
 
   @NotNull
   @NotEmpty
-  @Size(min=3)
-  @Column(name="log_usu")
+  @Size(min = 3)
+  @Column(name = "log_usu")
   @Getter(onMethod = @__(@Override))
   private String username;
   @ManyToMany(fetch = FetchType.EAGER)
-  @JoinTable(name="usuario_permissao", joinColumns = @JoinColumn(name="id_usu", referencedColumnName = "id_usu"),
-  inverseJoinColumns = @JoinColumn(name= "id_per", referencedColumnName = "id_per"))
+  @JoinTable(name = "usuario_permissao", joinColumns = @JoinColumn(name = "id_usu", referencedColumnName = "id_usu"),
+      inverseJoinColumns = @JoinColumn(name = "id_per", referencedColumnName = "id_per"))
   List<Permission> permissions;
 
-  @Column(name="acc_non_exp_usu")
+  @Column(name = "acc_non_exp_usu")
   @Getter(onMethod = @__(@Override))
   private boolean accountNonExpired;
 
@@ -88,7 +86,6 @@ public class User extends BaseEntity implements UserDetails {
   public Collection<? extends GrantedAuthority> getAuthorities() {
     return this.permissions;
   }
-
 
 
 }

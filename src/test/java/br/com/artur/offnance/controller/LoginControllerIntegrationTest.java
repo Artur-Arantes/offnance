@@ -49,6 +49,7 @@ public class LoginControllerIntegrationTest {
           .then()
           .statusCode(HttpStatus.OK.value());
     }
+
     @Test
     @DisplayName("teste de login com falha")
     void testLoginFailure() {

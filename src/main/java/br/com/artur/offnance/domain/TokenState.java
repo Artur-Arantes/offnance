@@ -1,20 +1,19 @@
 package br.com.artur.offnance.domain;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
-@Data
+@EqualsAndHashCode
+@Getter
+@Setter
+@RequiredArgsConstructor
 public class TokenState {
-  private String acessTolken;
-  private Long expiresIn;
+  private final String acessTolken;
+  private final Long expiresIn;
 
-  public TokenState() {
-    this.acessTolken = null;
-    this.expiresIn = null;
-  }
 
-  public TokenState(String tokenDeAcesso, long expiraEm) {
-    this.acessTolken = tokenDeAcesso;
-    this.expiresIn = expiraEm;
-  }
 
 }

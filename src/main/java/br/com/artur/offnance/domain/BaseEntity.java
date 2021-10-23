@@ -10,7 +10,6 @@ import javax.persistence.PreUpdate;
 import javax.persistence.Version;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
 @MappedSuperclass
@@ -28,6 +27,7 @@ public abstract class BaseEntity {
   protected ZonedDateTime createdAt;
 
   private ZonedDateTime updatedAt;
+
   @PrePersist
   protected void prePersist() {
     createdAt = updatedAt = ZonedDateTime.now();

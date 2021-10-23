@@ -1,9 +1,10 @@
 package br.com.artur.offnance.security.auth;
 
+import lombok.Setter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 
-
+@Setter
 public class TokenBasedAuthentication extends AbstractAuthenticationToken {
 
   private String token;
@@ -12,10 +13,6 @@ public class TokenBasedAuthentication extends AbstractAuthenticationToken {
   public TokenBasedAuthentication(final UserDetails userDetails) {
     super( userDetails.getAuthorities() );
     this.userDetails = userDetails;
-  }
-
-  public void setToken( String token ) {
-    this.token = token;
   }
 
   @Override

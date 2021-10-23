@@ -1,7 +1,7 @@
 package br.com.artur.offnance.service.imp;
 
-import br.com.artur.offnance.domain.User;
 import br.com.artur.offnance.service.UserService;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,10 +19,10 @@ public class CustomUserDetailsServiceImp implements UserDetailsService {
   private final UserService userService;
 
 
-  public UserDetails loadUserByUsername( final String user) throws UsernameNotFoundException {
+  public UserDetails loadUserByUsername(final String user) throws UsernameNotFoundException {
     log.info("Iniciando a pesquisa: " + user);
     final var usu = userService.findByUsername(user);
-    if (usu == null) {
+    if (Objects.isNull(usu)) {
       throw new UsernameNotFoundException(String.format("Nenhum usuário foi encontrado com" +
           " estas credenciais: '%s'.", user));
     } else {

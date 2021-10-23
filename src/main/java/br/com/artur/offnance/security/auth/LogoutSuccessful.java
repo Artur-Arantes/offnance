@@ -19,8 +19,8 @@ public class LogoutSuccessful implements LogoutSuccessHandler {
   ObjectMapper objectMapper;
 
   @Override
-  public void onLogoutSuccess(HttpServletRequest httpServletRequest,
-                              HttpServletResponse response, Authentication authentication)
+  public void onLogoutSuccess(final HttpServletRequest httpServletRequest,
+                              final HttpServletResponse response,final Authentication authentication)
       throws IOException, ServletException {
     Map<String, String> result = new HashMap<>();
     result.put("result", "success");

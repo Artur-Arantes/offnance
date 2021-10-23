@@ -1,8 +1,9 @@
 package br.com.artur.offnance.enums;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-
+@RequiredArgsConstructor
 public enum EnumEntryPoint {
 
   LOGIN_ROUTE("/api/login"),
@@ -10,10 +11,7 @@ public enum EnumEntryPoint {
   TURN_OFF_ROUTE("/api/logout");
 
   @Getter
-  @Setter
-  private String route;
+  private final String route;
 
-  EnumEntryPoint(String route) {
-    this.route = route;
-  }
+
 }
