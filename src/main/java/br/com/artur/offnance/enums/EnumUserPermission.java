@@ -3,10 +3,11 @@ package br.com.artur.offnance.enums;
 import static br.com.artur.offnance.config.Constants.ROLE;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @RequiredArgsConstructor
 public enum EnumUserPermission implements PersistableEnum<String> {
-  USUARIO("USER"),
+  USER("USER"),
   ADMIN("ADMIN");
 
   private final String role;
@@ -31,7 +32,6 @@ public enum EnumUserPermission implements PersistableEnum<String> {
   }
 
   public static class Converter extends AbstractEnumConverter<EnumUserPermission, String> {
-
     public Converter() {
       super(EnumUserPermission.class);
     }

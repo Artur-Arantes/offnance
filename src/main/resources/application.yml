@@ -3,13 +3,12 @@ spring:
     url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3307}/${DB_DB:offnanceapplication}?useUnicode=true&characterEncoding=utf8&useSSL=false&useLegacyDatetimeCode=false&serverTimezone=UTC&createDatabaseIfNotExist=true
     username: ${DB_USR:root}
     password: ${DB_PASS:}
-
+    
 configs:
   security:
     authentication:
       jwt:
-        # This token must be encoded using Base64 and be at least 256 bits long (you can type `openssl rand -base64 64` on your command line to generate a 512 bits one)
-        base64-secret: ZjE5YzQwOWY2NmZiMjkxMWU0MWM4MmViMGZiMzQxMWI5MTUyZjEyZDY5NmU3OTcxYWVhZDRkMzZiNDYzN2VhOTNhOTliY2NmZTg0NTdkZjU3NzU1YWRhMWI3NWQ4YzVlNGU3MmNlNzlkZDQ1MmFkMTcxYTQzNjJhZmFlYWFjZTQ=
-        # Token is valid 24 hours
-        token-validity-in-seconds: 86400
-        token-validity-in-seconds-for-remember-me: 2592000
+        app-authorization: ${APP_AUTHORIZATION:Offnance}
+        header: ${JWT_HEADER:Authorization}
+        expires-in : ${JWT_EXPIRES_IN:600}
+        cookie: ${JWT_COOKIE:AUTH-TOKEN}

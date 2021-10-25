@@ -1,7 +1,6 @@
 package br.com.artur.offnance.domain;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-
 import com.sun.istack.NotNull;
 import java.util.Collection;
 import java.util.List;
@@ -22,6 +21,8 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -35,54 +36,56 @@ import org.springframework.security.core.userdetails.UserDetails;
 @AttributeOverrides(value = {
     @AttributeOverride(name = "id", column = @Column(name = "id_usu")),
     @AttributeOverride(name = "version", column = @Column(name = "ver_usu")),
-    @AttributeOverride(name = "createdAt", column = @Column(name = "dat_usu")),
-    @AttributeOverride(name = "updatedAt", column = @Column(name = "upd_usu"))
+    @AttributeOverride(name = "createdAt", column = @Column(name = "cre_at_usu")),
+    @AttributeOverride(name = "updatedAt", column = @Column(name = "upd_at_usu"))
 })
+@ToString
 public class User extends BaseEntity implements UserDetails {
 
   @OneToOne(fetch = FetchType.LAZY, targetEntity = Person.class)
   @JsonManagedReference
+  @JoinColumn(name = "id_pes")
   private Person person;
+
   @NotNull
   @NotEmpty
-  @Column(name="usu_sen")
-  @Size(min =3)
+  @Column(name = "sen_usu")
+  @Size(min = 3)
   @Getter(onMethod = @__(@Override))
+  @Setter
   private String password;
+
   @NotNull
   @NotEmpty
-  @Size(min=3)
-  @Column(name="usu_login")
+  @Size(min = 3)
+  @Column(name = "log_usu")
   @Getter(onMethod = @__(@Override))
   private String username;
   @ManyToMany(fetch = FetchType.EAGER)
-  @JoinTable(name="usuario_permissao", joinColumns = @JoinColumn(name="id_usu", referencedColumnName = "id_usu"),
-  inverseJoinColumns = @JoinColumn(name= "id_per", referencedColumnName = "id_per"))
+  @JoinTable(name = "usuario_permissao", joinColumns = @JoinColumn(name = "id_usu", referencedColumnName = "id_usu"),
+      inverseJoinColumns = @JoinColumn(name = "id_per", referencedColumnName = "id_per"))
   List<Permission> permissions;
 
+  @Column(name = "acc_non_exp_usu")
+  @Getter(onMethod = @__(@Override))
+  private boolean accountNonExpired;
+
+  @Column(name = "cre_non_exp_usu")
+  @Getter(onMethod = @__(@Override))
+  private boolean credentialsNonExpired;
+
+  @Column(name = "ena_usu")
+  @Getter(onMethod = @__(@Override))
+  private boolean enabled;
+
+  @Column(name = "acc_non_loc_usu")
+  @Getter(onMethod = @__(@Override))
+  private boolean accountNonLocked;
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
     return this.permissions;
   }
 
-  @Override
-  public boolean isAccountNonExpired() {
-    return true;
-  }
 
-  @Override
-  public boolean isAccountNonLocked() {
-    return true;
-  }
-
-  @Override
-  public boolean isCredentialsNonExpired() {
-    return true;
-  }
-
-  @Override
-  public boolean isEnabled() {
-    return true;
-  }
 }
