@@ -1,7 +1,8 @@
 # Use the latest 2.1 version of CircleCI pipeline process engine.
 # See: https://circleci.com/docs/2.0/configuration-reference
-version: 2.0
+version: 2.1
 
+machine: true
 
 # Define a job to be invoked later in a workflow.
 # See: https://circleci.com/docs/2.0/configuration-reference/#jobs
@@ -15,11 +16,14 @@ jobs:
     docker:
       - image: cimg/openjdk:11.0
         environment:
-            DB_PORT:3306
+            DB_PORT=3306
+            TESTCONTAINERS_RYUK_DISABLED=True
+            TESTCONTAINERS_CHECKS_DISABLE=True
+            DISABLE_TEST_CONTAIENRS=True
       - image: mysql:5.7
         environment:
-          MYSQL_ALLOW_EMPTY_PASSWORD: yes
-          MYSQL_DATABASE: offnanceapplication
+          MYSQL_ALLOW_EMPTY_PASSWORD=yes
+          MYSQL_DATABASE=offnanceapplication
 
     # Add steps to the job
     # See: https://circleci.com/docs/2.0/configuration-reference/#steps
@@ -40,7 +44,7 @@ jobs:
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
 workflows:
-  sample: # This is the name of the workflow, feel free to change it to better match your workflow.
+  executa: # This is the name of the workflow, feel free to change it to better match your workflow.
     # Inside the workflow, you define the jobs you want to run.
     jobs:
       - build-and-test
