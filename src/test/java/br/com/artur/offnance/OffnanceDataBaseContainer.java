@@ -24,9 +24,9 @@ public class OffnanceDataBaseContainer extends MySQLContainer<OffnanceDataBaseCo
   @Override
   public void start() {
     super.start();
-    System.setProperty("DB_URL", container.getJdbcUrl()+"?useSSL=false");
-    System.setProperty("DB_USERNAME", container.getUsername());
-    System.setProperty("DB_PASSWORD", container.getPassword());
+    System.setProperty("DB_URL", container.getJdbcUrl());
+    System.setProperty("DB_USR", container.getUsername());
+    System.setProperty("DB_PASS", container.getPassword());
   }
 
   @Override
