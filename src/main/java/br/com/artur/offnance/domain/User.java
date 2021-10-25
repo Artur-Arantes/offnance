@@ -42,7 +42,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 @ToString
 public class User extends BaseEntity implements UserDetails {
 
-  @OneToOne(fetch = FetchType.LAZY, targetEntity = Person.class)
+  @OneToOne(fetch = FetchType.EAGER, targetEntity = Person.class)
   @JsonManagedReference
   @JoinColumn(name = "id_pes")
   private Person person;
