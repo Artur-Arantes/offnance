@@ -7,9 +7,7 @@ import br.com.artur.offnance.domain.dto.TypeDto;
 import br.com.artur.offnance.domain.dto.TypeOutputDto;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
-import java.io.InputStream;
 import java.util.Map;
-import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -80,7 +78,7 @@ public class TypeControllerIntegrationTest {
       TypeOutputDto typeOutputDto = TypeOutputDto.builder().name(name).user(
           TypeOutputDto.UserOutputDto.builder().userName("admin").build()
       ).build();
-      TypeDto typeDto = TypeDto.builder().idUser(1L).name(name).build();
+      TypeDto typeDto = TypeDto.builder().name(name).build();
       final var type = RestAssured.given().headers(headers)
           .body(typeDto)
           .when()
@@ -92,20 +90,6 @@ public class TypeControllerIntegrationTest {
       assertThat(type).isEqualTo(typeOutputDto);
     }
 
-
-
-    @Test
-    @DisplayName("Usuario nao encontrado")
-    void create_user_not_found() {
-      final var typeDto = TypeDto.builder()
-          .name("Anything").idUser(10L).build();
-      final var type = RestAssured.given().headers(headers)
-          .body(typeDto)
-          .when()
-          .post("api/type/")
-          .then()
-          .statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
-    }
   }
 }
 

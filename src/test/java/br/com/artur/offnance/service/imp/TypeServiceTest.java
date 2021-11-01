@@ -47,10 +47,10 @@ public class TypeServiceTest {
 
     @Test
     @DisplayName("Testando o sucesso do metodo")
-    void create_success() {
+    void success() {
       User user = mock(User.class);
       String name="anything";
-      TypeDto typeDto = TypeDto.builder().idUser(user.getId()).name(name).idUser(1L).build();
+      TypeDto typeDto = TypeDto.builder().name(name).build();
       final var otherThing = "otherThing";
       when(user.getUsername()).thenReturn(otherThing);
       TypeOutputDto typeOutputDto= TypeOutputDto.builder().name(name)
@@ -60,23 +60,30 @@ public class TypeServiceTest {
         final var t = invocationOnMock.getArgument(0, Type.class);
         return t;
       });
-      when(userRepository.findById(typeDto.getIdUser())).thenReturn(Optional.of(user));
-      assertThat(typeServiceImp.create(typeDto)).isNotNull().isEqualTo(typeOutputDto);
+      assertThat(typeServiceImp.create(typeDto, user)).isNotNull().isEqualTo(typeOutputDto);
 
     }
     @Test
     @DisplayName("null entry")
     void null_entry(){
-      assertThatExceptionOfType(NullPointerException.class).isThrownBy(()->typeServiceImp.create(null));
+      assertThatExceptionOfType(NullPointerException.class).isThrownBy(()->typeServiceImp.create(null, null));
     }
 
     @Test
     @DisplayName("Se o usuario nao estiver presente")
-    void create_user_not_present(){
+    void dto_null(){
       User user= new User();
       String name="anything";
-      TypeDto typeDto = TypeDto.builder().idUser(user.getId()).name(name).idUser(1L).build();
-      assertThatExceptionOfType(RuntimeException.class).isThrownBy(()->typeServiceImp.create(typeDto));
+      TypeDto typeDto = TypeDto.builder().name(name).build();
+      assertThatExceptionOfType(RuntimeException.class).isThrownBy(()->typeServiceImp.create(null, user));
+    }
+    @Test
+    @DisplayName("Se o usuario nao estiver presente")
+    void user_null(){
+      User user= new User();
+      String name="anything";
+      TypeDto typeDto = TypeDto.builder().name(name).build();
+      assertThatExceptionOfType(RuntimeException.class).isThrownBy(()->typeServiceImp.create(typeDto, null));
     }
   }
 }

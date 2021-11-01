@@ -2,12 +2,14 @@ package br.com.artur.offnance.controller;
 
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
+import br.com.artur.offnance.domain.User;
 import br.com.artur.offnance.domain.dto.TypeDto;
 import br.com.artur.offnance.domain.dto.TypeOutputDto;
 import br.com.artur.offnance.service.TypeService;
 import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,7 +22,8 @@ public class TypeController {
   private final TypeService typeService;
 
   @RequestMapping(method = POST, value = "/")
-  public TypeOutputDto create(HttpServletResponse response, @RequestBody TypeDto dto) {
-    return typeService.create(dto);
+  public TypeOutputDto create(final HttpServletResponse response, @RequestBody final TypeDto dto,
+                              @AuthenticationPrincipal final User user) {
+    return typeService.create(dto, user);
   }
 }
