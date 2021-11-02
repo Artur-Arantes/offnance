@@ -11,7 +11,7 @@
     </parent>
     <groupId>br.com.artur</groupId>
     <artifactId>offnance</artifactId>
-    <version>0.2.1-SNAPSHOT</version>
+    <version>0.1.0-SNAPSHOT</version>
     <name>offnance</name>
     <description>Demo project for Spring Boot</description>
     <properties>

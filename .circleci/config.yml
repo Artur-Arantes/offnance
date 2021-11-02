@@ -28,11 +28,10 @@ jobs:
       - run:
           name: Commit Lint
           command: |
-            LAST_COMMIT=$(git log -1 --pretty=%B)
-            COMMIT_REGEX="^(build|chore|ci|docs|fix|perf|refactor|revert|style|test|feat)(\(.+\))?:.*$"
+            LAST_COMMIT=$(git log -1 --pretty=%B | head -n1)
+            COMMIT_REGEX="^(build|chore|ci|docs|fix|perf|refactor|revert|style|test|feat)(\(.+\))?:(.+)$"
             if [[ $LAST_COMMIT =~ $COMMIT_REGEX ]]; then
-              FIRST_LINE_LAST_COMMIT=$(git log -1 --pretty=%B | head -n1)
-              if [[ $FIRST_LINE_LAST_COMMIT =~ [A-Z]+ ]]; then
+              if [[ $LAST_COMMIT =~ [A-Z]+ ]]; then
                 echo "Existe letra maiúscula no título do commit"
                 exit 1
               fi
@@ -67,6 +66,80 @@ jobs:
           key: v1-dependencies-{{ checksum "pom.xml" }}
       - store_artifacts:
           path: target
+  release:
+    machine:
+      image: ubuntu-1604:202007-01
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "pom.xml" }}
+            # fallback to using the latest cache if no exact match is found
+            - v1-dependencies-
+      - run:
+          name: Create Release
+          command: |
+            sudo apt-get update
+            sudo apt-get install bc
+            git remote set-url origin https://${GITHUB_TOKEN}@github.com/Artur-Arantes/offnance.git
+            git fetch origin
+            git reset --hard origin/main
+            LAST_COMMIT=$(git log -1 --pretty=%B | head -n1)
+            COMMIT_REGEX="^(build|chore|ci|docs|fix|perf|refactor|revert|style|test|feat)(\(.+\))?:(.+)$"
+            if [[ $LAST_COMMIT =~ $COMMIT_REGEX ]]; then
+              VER="${BASH_REMATCH[1]}"
+              TASK="${BASH_REMATCH[2]}"
+              DESC="${BASH_REMATCH[3]}"
+              OLD_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+              IS_MINOR="(build|chore|ci|docs|fix|perf|refactor|revert|style|test)"
+              VERSION_MATCH="^([0-9]+)\.([0-9]+)\.([0-9]+)"
+              if [[ $LAST_COMMIT =~ IS_MINOR ]]; then
+                if [[ $OLD_VERSION =~ $VERSION_MATCH ]]; then
+                  BREAK="${BASH_REMATCH[1]}"
+                  MAJOR="${BASH_REMATCH[2]}"
+                  MINOR="${BASH_REMATCH[3]}"
+                  MINOR="$(echo "$MINOR+1" | bc)"
+                fi
+              else
+                if [[ $OLD_VERSION =~ $VERSION_MATCH ]]; then
+                  BREAK="${BASH_REMATCH[1]}"
+                  MAJOR="${BASH_REMATCH[2]}"
+                  MINOR="${BASH_REMATCH[3]}"
+                  MAJOR="$(echo "$MINOR+1" | bc)"
+                  MINOR=0
+                fi
+              fi
+              printf "$(echo "\n## $BREAK.$MAJOR.$MINOR TASK $TASK\n### $VER\n -$DESC")" >> changelog.md
+              NEW_VERSION="$(echo "$BREAK.$MAJOR.$MINOR")"
+              echo "Releasing $OLD_VERSION as $NEW_VERSION"
+              git config user.name "Release Script"
+              git config user.email "builds@offnance-circle-ci.com"
+              mvn versions:set -DnewVersion="$(echo "$NEW_VERSION")"
+              echo "Cria commit"
+              git add pom.xml
+              git add changelog.md
+              git commit -m "[skip ci] chore: $NEW_VERSION"
+              echo "Cria tag"
+              git tag -f "$NEW_VERSION"
+              git checkout main
+              echo "Cria merge"
+              echo "Envia main"
+              git push -f origin main --tags
+              NEW_VERSION="$(echo "$BREAK.$MAJOR.$MINOR")-SNAPSHOT"
+              mvn versions:set -DnewVersion="$(echo "$NEW_VERSION")"
+              git add pom.xml
+              git commit -m "[skip ci] chore: add snapshot version"
+              git push -f origin main
+              exit 0
+            fi
+            echo "Não foi possível fazer release"
+            exit 1
+      - save_cache:
+          paths:
+            - ~/.m2
+          key: v1-dependencies-{{ checksum "pom.xml" }}
+
+
   build:
     # These next lines define a Docker executor: https://circleci.com/docs/2.0/executor-types/
     # You can specify an image from Dockerhub or use one of our Convenience Images from CircleCI's Developer Hub.
@@ -108,21 +181,38 @@ jobs:
 workflows:
   executa: # This is the name of the workflow, feel free to change it to better match your workflow.
     # Inside the workflow, you define the jobs you want to run.
+    when:
+      and:
+        - not:
+            matches:
+              pattern: "^chore.*$"
+              value: git log --format=oneline -n 1 $CIRCLE_SHA1
     jobs:
       - test
       - build:
           requires:
             - test
-      - hold: # <<< A job that will require manual approval in the CircleCI web application.
-          type: approval # <<< This key-value pair will set your workflow to a status of "On Hold"
-          requires: # We only run the "hold" job when test2 has succeeded
+      - release:
+          requires:
             - build
           filters:
             branches:
               only: main
+            tags:
+              ignore: /.*/
+
+      - hold: # <<< A job that will require manual approval in the CircleCI web application.
+          type: approval # <<< This key-value pair will set your workflow to a status of "On Hold"
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /.*/
       - deploy:
           requires:
             - hold
           filters:
             branches:
-              only: main
+              ignore: /.*/
+            tags:
+              only: /.*/
