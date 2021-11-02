@@ -7,5 +7,6 @@ import org.springframework.stereotype.Service;
 
 @Service
 public interface TypeService {
-   TypeOutputDto create(TypeDto dto, User user);
+
+  TypeOutputDto create(TypeDto dto, User user);
 }

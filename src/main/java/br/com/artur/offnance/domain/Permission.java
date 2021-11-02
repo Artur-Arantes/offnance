@@ -14,6 +14,7 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
+import lombok.Generated;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -31,6 +32,7 @@ import org.springframework.security.core.GrantedAuthority;
     @AttributeOverride(name = "createdAt", column = @Column(name = "cre_at_per")),
     @AttributeOverride(name = "updatedAt", column = @Column(name = "upd_at_per"))
 })
+@Generated
 public class Permission extends BaseEntity implements GrantedAuthority {
 
   @Id

@@ -10,7 +10,6 @@ import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
@@ -22,6 +21,7 @@ import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
+import lombok.Generated;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -31,7 +31,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 @Table(name = "usuario")
 @Entity
-@Setter
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
@@ -44,6 +43,7 @@ import org.springframework.security.core.userdetails.UserDetails;
     @AttributeOverride(name = "updatedAt", column = @Column(name = "upd_at_usu"))
 })
 @ToString
+@Generated
 public class User extends BaseEntity implements UserDetails {
 
   @OneToOne(fetch = FetchType.EAGER, targetEntity = Person.class)
@@ -69,10 +69,14 @@ public class User extends BaseEntity implements UserDetails {
       inverseJoinColumns = @JoinColumn(name = "id_per", referencedColumnName = "id_per"))
   List<Permission> permissions;
 
-  @OneToMany(mappedBy = "user", targetEntity = Type.class, fetch= FetchType.LAZY)
+  @OneToMany(mappedBy = "user", targetEntity = Type.class, fetch = FetchType.LAZY)
   @JsonBackReference
   @Setter
   private List<Type> types;
+
+  @OneToMany
+  @JsonBackReference
+  private List<Tag> tags;
 
   @Column(name = "acc_non_exp_usu")
   @Getter(onMethod = @__(@Override))

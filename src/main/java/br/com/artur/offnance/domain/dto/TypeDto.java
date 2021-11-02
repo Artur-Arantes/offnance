@@ -15,4 +15,6 @@ public class TypeDto {
 
   private  String name;
 
+  private Long id;
+
 }

@@ -12,13 +12,16 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode
+@EqualsAndHashCode(of = "id")
 @Setter
 public class TypeOutputDto {
   @JsonProperty("name")
   private String name;
   @JsonProperty("user")
   private UserOutputDto user;
+
+  @JsonProperty("id")
+  private Long id;
 
   @Builder
   @Getter
