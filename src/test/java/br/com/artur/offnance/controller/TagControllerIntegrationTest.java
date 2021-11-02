@@ -1,12 +1,16 @@
 package br.com.artur.offnance.controller;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 import br.com.artur.offnance.OffnanceDataBaseContainer;
+import br.com.artur.offnance.domain.dto.TagDto;
+import br.com.artur.offnance.domain.dto.TagOutPutDto;
 import br.com.artur.offnance.domain.dto.TypeDto;
 import br.com.artur.offnance.domain.dto.TypeOutputDto;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import java.math.BigDecimal;
 import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,11 +23,11 @@ import org.springframework.http.HttpStatus;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Testcontainers(disabledWithoutDocker = true)
-@DisplayName("Teste para integração do tipo")
-public class TypeControllerIntegrationTest {
+@DisplayName("Teste para integração da tag")
+public class TagControllerIntegrationTest {
+
 
   private String token;
 
@@ -43,6 +47,8 @@ public class TypeControllerIntegrationTest {
     container.start();
   }
 
+  private TypeOutputDto typeOutputDto;
+
   @BeforeEach
   void setUp() {
     RestAssured.port = port;
@@ -52,6 +58,23 @@ public class TypeControllerIntegrationTest {
         "Authorization", "Bearer " + token,
         "Content-Type", "application/json"
     );
+    create_type();
+  }
+
+  private void create_type() {
+    final var name = "anything";
+    TypeOutputDto typeOutputDto = TypeOutputDto.builder().name(name).user(
+        TypeOutputDto.UserOutputDto.builder().userName("admin").build()
+    ).build();
+    TypeDto typeDto = TypeDto.builder().name(name).id(1L).build();
+    this.typeOutputDto = RestAssured.given().headers(headers)
+        .body(typeDto)
+        .when()
+        .post("api/type/")
+        .then()
+        .statusCode(HttpStatus.OK.value())
+        .extract().jsonPath()
+        .getObject("", TypeOutputDto.class);
   }
 
   private String getToken() {
@@ -67,31 +90,31 @@ public class TypeControllerIntegrationTest {
     return token;
   }
 
-  @Nested
-  @DisplayName("testes criar")
-  class create {
+@Nested
+@DisplayName("Testando o metodo Create")
+class Create{
 
-    @Test
-    @DisplayName("testes de criar com sucesso")
-    void create_Sucess() {
-      final var name = "anything";
-      TypeOutputDto typeOutputDto = TypeOutputDto.builder().id(1L).name(name).user(
-          TypeOutputDto.UserOutputDto.builder().userName("admin").build()
-      ).build();
-      TypeDto typeDto = TypeDto.builder().name(name).build();
-      final var type = RestAssured.given().headers(headers)
-          .body(typeDto)
-          .when()
-          .post("api/type/")
-          .then()
-          .statusCode(HttpStatus.OK.value())
-          .extract().jsonPath()
-          .getObject("", TypeOutputDto.class);
-      assertThat(type).isEqualTo(typeOutputDto);
-    }
-
-  }
+@Test
+@DisplayName("testando sucess")
+public void success(){
+  final var name = "anything";
+  TagOutPutDto tagOutPutDto= TagOutPutDto.builder().name(name)
+      .id(1L)
+      .user(TagOutPutDto.UserOutPutDto.builder().username("admin").build())
+      .person(TagOutPutDto.PersonOutPutDto.builder().name("anyone").build())
+      .type(TagOutPutDto.TypeOutPutDto.builder().name("anything").build())
+      .build();
+  TagDto dto= TagDto.builder().idPerson(1L).idType(1L).name(name).percentage(new BigDecimal("1")).build();
+  final var tag = RestAssured.given().headers(headers)
+      .body(dto)
+      .when()
+      .post("api/tags/")
+      .then()
+      .statusCode(HttpStatus.OK.value())
+      .extract().jsonPath()
+      .getObject("", TagOutPutDto.class);
+  assertThat(tag).isEqualTo(tagOutPutDto);
 }
 
-
-
+}
+}

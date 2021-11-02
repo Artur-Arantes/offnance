@@ -12,7 +12,6 @@ import br.com.artur.offnance.domain.dto.TypeDto;
 import br.com.artur.offnance.domain.dto.TypeOutputDto;
 import br.com.artur.offnance.repositories.TypeRepository;
 import br.com.artur.offnance.repositories.UserRepository;
-import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -23,10 +22,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class TypeServiceTest {
+public class TypeServiceImplTest {
   @Mock
   private TypeRepository typeRepository;
-
 
 
   @Mock
@@ -49,11 +47,11 @@ public class TypeServiceTest {
     @DisplayName("Testando o sucesso do metodo")
     void success() {
       User user = mock(User.class);
-      String name="anything";
+      String name = "anything";
       TypeDto typeDto = TypeDto.builder().name(name).build();
       final var otherThing = "otherThing";
       when(user.getUsername()).thenReturn(otherThing);
-      TypeOutputDto typeOutputDto= TypeOutputDto.builder().name(name)
+      TypeOutputDto typeOutputDto = TypeOutputDto.builder().name(name)
           .user(TypeOutputDto.UserOutputDto.builder().userName(otherThing).build())
           .build();
       when(typeRepository.save(any(Type.class))).thenAnswer(invocationOnMock -> {
@@ -63,27 +61,32 @@ public class TypeServiceTest {
       assertThat(typeServiceImp.create(typeDto, user)).isNotNull().isEqualTo(typeOutputDto);
 
     }
+
     @Test
     @DisplayName("null entry")
-    void null_entry(){
-      assertThatExceptionOfType(NullPointerException.class).isThrownBy(()->typeServiceImp.create(null, null));
+    void null_entry() {
+      assertThatExceptionOfType(NullPointerException.class).isThrownBy(
+          () -> typeServiceImp.create(null, null));
     }
 
     @Test
     @DisplayName("Se o usuario nao estiver presente")
-    void dto_null(){
-      User user= new User();
-      String name="anything";
+    void dto_null() {
+      User user = new User();
+      String name = "anything";
       TypeDto typeDto = TypeDto.builder().name(name).build();
-      assertThatExceptionOfType(RuntimeException.class).isThrownBy(()->typeServiceImp.create(null, user));
+      assertThatExceptionOfType(RuntimeException.class).isThrownBy(
+          () -> typeServiceImp.create(null, user));
     }
+
     @Test
     @DisplayName("Se o usuario nao estiver presente")
-    void user_null(){
-      User user= new User();
-      String name="anything";
+    void user_null() {
+      User user = new User();
+      String name = "anything";
       TypeDto typeDto = TypeDto.builder().name(name).build();
-      assertThatExceptionOfType(RuntimeException.class).isThrownBy(()->typeServiceImp.create(typeDto, null));
+      assertThatExceptionOfType(RuntimeException.class).isThrownBy(
+          () -> typeServiceImp.create(typeDto, null));
     }
   }
 }
