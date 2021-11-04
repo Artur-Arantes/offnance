@@ -14,11 +14,13 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Generated;
 import lombok.Getter;
+import lombok.ToString;
 
 @Entity
 @EqualsAndHashCode(of = "id")
 @Builder
 @Getter
+@ToString(callSuper = true, includeFieldNames = true)
 @Table(name = "tags")
 @AttributeOverrides(value = {
     @AttributeOverride(name = "id", column = @Column(name = "id_tag")),
@@ -33,11 +35,13 @@ public class Tag extends BaseEntity {
   @ManyToOne
   @JoinColumn(name = "id_usu")
   @JsonBackReference
+  @ToString.Exclude
   private User user;
 
   @JoinColumn(name = "id_pes")
   @ManyToOne
   @JsonBackReference
+  @ToString.Exclude
   private Person person;
 
   @Column(name = "nom_tag")
@@ -46,6 +50,7 @@ public class Tag extends BaseEntity {
   @ManyToOne
   @JoinColumn(name = "id_tip")
   @JsonBackReference
+  @ToString.Exclude
   private Type type;
 
   @Column(name = "per_tag")

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.sun.istack.NotNull;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
@@ -42,13 +43,14 @@ import org.springframework.security.core.userdetails.UserDetails;
     @AttributeOverride(name = "createdAt", column = @Column(name = "cre_at_usu")),
     @AttributeOverride(name = "updatedAt", column = @Column(name = "upd_at_usu"))
 })
-@ToString
+@ToString(callSuper = true, includeFieldNames = true)
 @Generated
 public class User extends BaseEntity implements UserDetails {
 
   @OneToOne(fetch = FetchType.EAGER, targetEntity = Person.class)
   @JsonManagedReference
   @JoinColumn(name = "id_pes")
+  @ToString.Exclude
   private Person person;
 
   @NotNull
@@ -65,6 +67,7 @@ public class User extends BaseEntity implements UserDetails {
   @Getter(onMethod = @__(@Override))
   private String username;
   @ManyToMany(fetch = FetchType.EAGER)
+  @ToString.Exclude
   @JoinTable(name = "usuario_permissao", joinColumns = @JoinColumn(name = "id_usu", referencedColumnName = "id_usu"),
       inverseJoinColumns = @JoinColumn(name = "id_per", referencedColumnName = "id_per"))
   List<Permission> permissions;
@@ -72,11 +75,13 @@ public class User extends BaseEntity implements UserDetails {
   @OneToMany(mappedBy = "user", targetEntity = Type.class, fetch = FetchType.LAZY)
   @JsonBackReference
   @Setter
-  private List<Type> types;
+  @ToString.Exclude
+  private Set<Type> types;
 
-  @OneToMany
+  @OneToMany(mappedBy = "user", targetEntity = Tag.class, fetch = FetchType.LAZY)
   @JsonBackReference
-  private List<Tag> tags;
+  @ToString.Exclude
+  private Set<Tag> tags;
 
   @Column(name = "acc_non_exp_usu")
   @Getter(onMethod = @__(@Override))

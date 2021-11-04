@@ -18,6 +18,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Generated;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Entity
 @Table(name = "pessoa")
@@ -25,6 +26,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Getter
 @Builder
+@ToString(callSuper = true, includeFieldNames = true)
 @EqualsAndHashCode(of = "id")
 @AttributeOverrides(value = {
     @AttributeOverride(name = "id", column = @Column(name = "id_pes")),
@@ -41,9 +43,11 @@ public class Person extends BaseEntity {
   @OneToOne(mappedBy = "person", fetch = FetchType.LAZY, optional = true)
   @JsonManagedReference
   @JoinColumn(name = "id_pes")
+  @ToString.Exclude
   private User user;
 
   @OneToMany
   @JsonManagedReference
+  @ToString.Exclude
   private List<Tag> tag;
 }

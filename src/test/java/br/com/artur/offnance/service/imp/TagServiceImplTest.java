@@ -12,6 +12,7 @@ import br.com.artur.offnance.domain.Type;
 import br.com.artur.offnance.domain.User;
 import br.com.artur.offnance.domain.dto.TagDto;
 import br.com.artur.offnance.domain.dto.TagOutPutDto;
+import br.com.artur.offnance.exceptions.TypeNotFoundException;
 import br.com.artur.offnance.repositories.PersonRepository;
 import br.com.artur.offnance.repositories.TagRepository;
 import br.com.artur.offnance.repositories.TypeRepository;
@@ -79,6 +80,33 @@ public class TagServiceImplTest {
       assertThat(tagServiceImp.create(response, user, tagDto)).isNotNull().isEqualTo(tagOutPutDto);
     }
 
+
+    @Test
+    @DisplayName("Type não encontrado")
+    public void type_not_found() {
+      final var name = "anything";
+      Person person = mock(Person.class);
+      HttpServletResponse response = mock(HttpServletResponse.class);
+      User user = mock(User.class);
+      Type type = mock(Type.class);
+      TagDto tagDto = TagDto.builder().name(name)
+              .idPerson(1l)
+              .idType(1L)
+              .percentage(new BigDecimal("1"))
+              .build();
+      TagOutPutDto tagOutPutDto = TagOutPutDto.builder()
+              .name(name)
+              .type(TagOutPutDto.TypeOutPutDto.builder().name("whosKnow").build())
+              .user(TagOutPutDto.UserOutPutDto.builder().username("anyone").build())
+              .person(TagOutPutDto.PersonOutPutDto.builder().name("Jim carry").build())
+              .percentage(new BigDecimal("1"))
+              .build();
+      when(personRepository.findById(tagDto.getIdPerson())).thenReturn(Optional.of(person));
+      when(typeRepository.findById(tagDto.getIdType())).thenReturn(Optional.empty());
+      assertThatExceptionOfType(TypeNotFoundException.class)
+              .isThrownBy(() -> tagServiceImp.create(response, user, tagDto));
+    }
+
     @Test
     @DisplayName("com todas entradas nulas")
     public void null_entry(){
@@ -102,19 +130,10 @@ public class TagServiceImplTest {
     @Test
     @DisplayName("terceiro parametro nulo")
     public void third_param_null() {
-      Person person= mock(Person.class);
-      Type type=mock(Type.class);
       HttpServletResponse response=mock(HttpServletResponse.class);
       User user= mock(User.class);
-      TagDto tagDto = TagDto.builder().name("A")
-          .idPerson(1l)
-          .idType(1L)
-          .percentage(new BigDecimal("1"))
-          .build();
-      when(personRepository.findById(tagDto.getIdPerson())).thenReturn(Optional.of(person));
-      when(typeRepository.findById(tagDto.getIdType())).thenReturn(Optional.empty());
       assertThatExceptionOfType(NullPointerException.class).isThrownBy(() ->
-          tagServiceImp.create(response, user, tagDto));
+          tagServiceImp.create(response, user, null));
     }
   }
 }

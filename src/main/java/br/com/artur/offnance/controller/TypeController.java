@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,6 +23,7 @@ public class TypeController {
   private final TypeService typeService;
 
   @RequestMapping(method = POST, value = "/")
+  @Transactional
   public TypeOutputDto create(final HttpServletResponse response, @RequestBody final TypeDto dto,
                               @AuthenticationPrincipal final User user) {
     return typeService.create(dto, user);
