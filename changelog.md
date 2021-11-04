@@ -9,3 +9,6 @@
 ## 0.2.0 TASK (#1qer2tq)
 ### feat
  - add cors configuration
+## 0.3.0 TASK (#1qer2tq)
+### feat
+ - adiciona mais configuracoes de cors e controller advice
