@@ -12,12 +12,14 @@ import lombok.EqualsAndHashCode;
 import lombok.Generated;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
 @MappedSuperclass
 @RequiredArgsConstructor
 @Getter
 @EqualsAndHashCode(of = "id")
 @Generated
+@ToString
 public abstract class BaseEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)

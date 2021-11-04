@@ -10,6 +10,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -20,6 +21,7 @@ public class TypeServiceImp implements TypeService {
 
 
   @Override
+  @Transactional
   public TypeOutputDto create(@NonNull final TypeDto dto, @NonNull final User user) {
     var type = Type.builder()
         .name(dto.getName())

@@ -15,3 +15,7 @@ configs:
         header: ${JWT_HEADER:Authorization}
         expires-in : ${JWT_EXPIRES_IN:600}
         cookie: ${JWT_COOKIE:AUTH-TOKEN}
+
+logging:
+  level:
+    root: INFO

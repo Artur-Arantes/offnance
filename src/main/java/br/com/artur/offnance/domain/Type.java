@@ -24,7 +24,6 @@ import javax.persistence.Table;
 import java.util.List;
 
 @Table(name = "tipo")
-@ToString
 @Setter
 @Builder
 @AttributeOverrides(value = {
@@ -39,11 +38,13 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Generated
+@ToString(callSuper = true, includeFieldNames = true)
 public class Type extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "id_usu")
     @JsonBackReference
+    @ToString.Exclude
     private User user;
 
     @Column(name = "nom_tip")
@@ -51,6 +52,7 @@ public class Type extends BaseEntity {
 
     @JsonManagedReference
     @OneToMany
+    @ToString.Exclude
     private List<Tag> tag;
 
     public TypeOutputDto toOutput() {
