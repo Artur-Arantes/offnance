@@ -1,10 +1,15 @@
 package br.com.artur.offnance.controller;
 
+import static java.text.MessageFormat.format;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import br.com.artur.offnance.OffnanceDataBaseContainer;
 import br.com.artur.offnance.domain.dto.DataDto;
 import br.com.artur.offnance.domain.dto.DataOutPutDto;
+import br.com.artur.offnance.domain.dto.TagDto;
+import br.com.artur.offnance.domain.dto.TagOutPutDto;
+import br.com.artur.offnance.domain.dto.TypeDto;
+import br.com.artur.offnance.domain.dto.TypeOutputDto;
 import br.com.artur.offnance.service.DataService;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
@@ -26,7 +31,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Testcontainers(disabledWithoutDocker = true)
 @DisplayName("Teste para integração de Dados")
-public class DataControllerIntegrationTest {
+public class DataControllerIntegrationTest extends BaseControllerIntegrationTest {
   private String token;
 
   private Map<String, String> headers;
@@ -61,40 +66,31 @@ public class DataControllerIntegrationTest {
 
   }
 
-  private String getToken() {
-    String token = RestAssured.given().contentType(ContentType.URLENC)
-        .formParam("username", "admin")
-        .formParam("password", "admin")
-        .when()
-        .post("/api/login")
-        .then()
-        .statusCode(HttpStatus.OK.value())
-        .extract().jsonPath()
-        .getObject("accessToken", String.class);
-    return token;
-  }
-
   @Nested
   @DisplayName("testes para o metodo create")
   class CreateTest {
 
     @Test
-    @DisplayName("testando sucess")
+    @DisplayName("Teste de sucesso")
     public void success() {
-      List<Long> idTag = new ArrayList<>();
-      idTag.add(1l);
+      final var typeOutputDto = createType(headers, TypeDto.builder().name("genericType").build());
+      List<Long> idTags = new ArrayList<>();
+      for (int i=0; i < 10; i++) {
+        final var tag = createTag(headers, TagDto.builder().idPerson(1L).idType(typeOutputDto.getId())
+                .name(format("Tag {0}", i))
+                .percentage(BigDecimal.valueOf(FAKER.number().numberBetween(0, 100)))
+                .build());
+        idTags.add(tag.getId());
+      }
       final var name = "anything";
-      DataOutPutDto dataOutPutDto = DataOutPutDto.builder().name(name)
-          .user(DataOutPutDto.UserOutPutDto.builder().username("admin").build())
+      final var value = BigDecimal.valueOf(FAKER.number().numberBetween(0, 1000));
+      final var dataOutPutDto = DataOutPutDto.builder()
           .id(1L)
-          .status("any")
-          .value(new BigDecimal("1"))
-          .name(name)
           .build();
       DataDto dto = DataDto.builder().name(name)
-          .value(new BigDecimal("1"))
+          .value(value)
           .status("any")
-          .idTags(idTag)
+          .idTags(idTags)
           .name(name)
           .build();
       final var data = RestAssured.given().headers(headers)

@@ -66,7 +66,7 @@ public class TagServiceImplTest {
           .build();
       TagOutPutDto tagOutPutDto = TagOutPutDto.builder()
           .name(name)
-          .type(TagOutPutDto.TypeOutPutDto.builder().name("whosKnow").build())
+          .type(TagOutPutDto.TypeOutputDto.builder().name("whosKnow").build())
           .user(TagOutPutDto.UserOutPutDto.builder().username("anyone").build())
           .person(TagOutPutDto.PersonOutPutDto.builder().name("Jim carry").build())
           .percentage(new BigDecimal("1"))
@@ -96,7 +96,7 @@ public class TagServiceImplTest {
               .build();
       TagOutPutDto tagOutPutDto = TagOutPutDto.builder()
               .name(name)
-              .type(TagOutPutDto.TypeOutPutDto.builder().name("whosKnow").build())
+              .type(TagOutPutDto.TypeOutputDto.builder().name("whosKnow").build())
               .user(TagOutPutDto.UserOutPutDto.builder().username("anyone").build())
               .person(TagOutPutDto.PersonOutPutDto.builder().name("Jim carry").build())
               .percentage(new BigDecimal("1"))

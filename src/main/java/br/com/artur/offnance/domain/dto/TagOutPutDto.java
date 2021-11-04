@@ -8,6 +8,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Builder
 @Getter
@@ -15,6 +16,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
 @Setter
+@ToString
 public class TagOutPutDto {
 
   @JsonProperty("id")
@@ -31,7 +33,7 @@ public class TagOutPutDto {
 
 
   @JsonProperty("type")
-  private TypeOutPutDto type;
+  private TypeOutputDto type;
 
   @JsonProperty("person")
   private PersonOutPutDto person;
@@ -42,7 +44,8 @@ public class TagOutPutDto {
   @NoArgsConstructor
   @EqualsAndHashCode
   @Setter
-  public static class TypeOutPutDto {
+  @ToString
+  public static class TypeOutputDto {
 
     @JsonProperty("name")
     private String name;
@@ -55,6 +58,7 @@ public class TagOutPutDto {
   @NoArgsConstructor
   @EqualsAndHashCode
   @Setter
+  @ToString
   public static class PersonOutPutDto {
 
     @JsonProperty("name")
@@ -67,6 +71,7 @@ public class TagOutPutDto {
   @NoArgsConstructor
   @EqualsAndHashCode
   @Setter
+  @ToString
   public static class UserOutPutDto {
 
     @JsonProperty("username")

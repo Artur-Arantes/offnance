@@ -6,7 +6,7 @@ import br.com.artur.offnance.OffnanceDataBaseContainer;
 import br.com.artur.offnance.domain.dto.TypeDto;
 import br.com.artur.offnance.domain.dto.TypeOutputDto;
 import io.restassured.RestAssured;
-import io.restassured.http.ContentType;
+
 import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,7 +23,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Testcontainers(disabledWithoutDocker = true)
 @DisplayName("Teste para integração do tipo")
-public class TypeControllerIntegrationTest {
+public class TypeControllerIntegrationTest extends BaseControllerIntegrationTest {
 
   private String token;
 
@@ -54,19 +54,6 @@ public class TypeControllerIntegrationTest {
     );
   }
 
-  private String getToken() {
-    String token = RestAssured.given().contentType(ContentType.URLENC)
-        .formParam("username", "admin")
-        .formParam("password", "admin")
-        .when()
-        .post("/api/login")
-        .then()
-        .statusCode(HttpStatus.OK.value())
-        .extract().jsonPath()
-        .getObject("accessToken", String.class);
-    return token;
-  }
-
   @Nested
   @DisplayName("testes criar")
   class create {
@@ -75,7 +62,7 @@ public class TypeControllerIntegrationTest {
     @DisplayName("testes de criar com sucesso")
     void create_Sucess() {
       final var name = "anything";
-      TypeOutputDto typeOutputDto = TypeOutputDto.builder().id(1L).name(name).user(
+      TypeOutputDto typeOutputDto = TypeOutputDto.builder().name(name).user(
           TypeOutputDto.UserOutputDto.builder().userName("admin").build()
       ).build();
       TypeDto typeDto = TypeDto.builder().name(name).build();
@@ -87,9 +74,9 @@ public class TypeControllerIntegrationTest {
           .statusCode(HttpStatus.OK.value())
           .extract().jsonPath()
           .getObject("", TypeOutputDto.class);
+      typeOutputDto.setId(type.getId());
       assertThat(type).isEqualTo(typeOutputDto);
     }
-
   }
 }
 

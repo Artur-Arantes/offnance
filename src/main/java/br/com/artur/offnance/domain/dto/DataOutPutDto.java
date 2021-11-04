@@ -34,7 +34,7 @@ public class DataOutPutDto {
   private BigDecimal value;
 
   @JsonProperty("id_tags")
-  private List<Long> tags;
+  private List<DataOutPutDto.TagOutputDto> tags;
 
   @Builder
   @Getter
@@ -54,11 +54,12 @@ public class DataOutPutDto {
   @NoArgsConstructor
   @EqualsAndHashCode
   @Setter
-  public static class TagOutPutDto {
+  public static class TagOutputDto {
 
+    @JsonProperty("id")
+    Long id;
     @JsonProperty("name")
-    List<String> tagsNames;
-    ;
+    String name;
   }
 
 }
