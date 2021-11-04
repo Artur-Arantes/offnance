@@ -7,6 +7,7 @@ import br.com.artur.offnance.domain.dto.TypeDto;
 import br.com.artur.offnance.domain.dto.TypeOutputDto;
 import br.com.artur.offnance.service.TypeService;
 import javax.servlet.http.HttpServletResponse;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -24,8 +25,9 @@ public class TypeController {
 
   @RequestMapping(method = POST, value = "/")
   @Transactional
-  public TypeOutputDto create(final HttpServletResponse response, @RequestBody final TypeDto dto,
-                              @AuthenticationPrincipal final User user) {
+  public TypeOutputDto create(@NonNull final HttpServletResponse response,
+                              @NonNull @RequestBody final TypeDto dto,
+                              @AuthenticationPrincipal @NonNull final User user) {
     return typeService.create(dto, user);
   }
 }

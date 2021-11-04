@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.math.BigDecimal;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -11,6 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
+@EqualsAndHashCode(of = "id")
 public class TagDto {
 
   private BigDecimal percentage;

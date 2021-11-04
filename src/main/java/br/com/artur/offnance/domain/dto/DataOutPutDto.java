@@ -9,6 +9,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Builder
 @Getter
@@ -16,6 +17,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
 @Setter
+@ToString
 public class DataOutPutDto {
 
   @JsonProperty("id")
@@ -34,7 +36,7 @@ public class DataOutPutDto {
   private BigDecimal value;
 
   @JsonProperty("id_tags")
-  private List<Long> tags;
+  private List<DataOutPutDto.TagOutputDto> tags;
 
   @Builder
   @Getter
@@ -42,6 +44,7 @@ public class DataOutPutDto {
   @NoArgsConstructor
   @EqualsAndHashCode
   @Setter
+  @ToString
   public static class UserOutPutDto {
 
     @JsonProperty("username")
@@ -54,11 +57,13 @@ public class DataOutPutDto {
   @NoArgsConstructor
   @EqualsAndHashCode
   @Setter
-  public static class TagOutPutDto {
+  @ToString
+  public static class TagOutputDto {
 
+    @JsonProperty("id")
+    Long id;
     @JsonProperty("name")
-    List<String> tagsNames;
-    ;
+    String name;
   }
 
 }

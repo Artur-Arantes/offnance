@@ -3,7 +3,9 @@ package br.com.artur.offnance.domain;
 import br.com.artur.offnance.domain.dto.DataOutPutDto;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
@@ -13,12 +15,15 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Generated;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
@@ -51,6 +56,8 @@ public class Data extends BaseEntity {
   @ManyToMany
   @JoinTable(name = "tags_dados", joinColumns = @JoinColumn(name = "id_dad", referencedColumnName = "id_dad"),
       inverseJoinColumns = @JoinColumn(name = "id_tag", referencedColumnName = "id_tag"))
+  @JsonManagedReference
+  @ToString.Exclude
   List<Tag> tags;
 
   @ManyToOne
@@ -58,11 +65,24 @@ public class Data extends BaseEntity {
   @JsonBackReference
   private User user;
 
+  public List<Tag> getTags() {
+    if (tags == null) {
+      tags = new ArrayList<>();
+    }
+    return tags;
+  }
+
   public DataOutPutDto toOutput() {
     return DataOutPutDto.builder()
         .name(name)
         .id(id)
         .user(DataOutPutDto.UserOutPutDto.builder().username(user.getUsername()).build())
+            .tags(tags.stream().map(tag ->
+                    DataOutPutDto.TagOutputDto.builder()
+                            .id(tag.getId())
+                            .name(tag.getName())
+                            .build())
+                    .collect(Collectors.toList()))
         .build();
   }
 }

@@ -5,6 +5,7 @@ import br.com.artur.offnance.domain.Tag;
 import br.com.artur.offnance.domain.User;
 import br.com.artur.offnance.domain.dto.DataDto;
 import br.com.artur.offnance.domain.dto.DataOutPutDto;
+import br.com.artur.offnance.exceptions.TagNotFoundException;
 import br.com.artur.offnance.repositories.DataRepository;
 import br.com.artur.offnance.repositories.TagRepository;
 import br.com.artur.offnance.service.DataService;
@@ -27,9 +28,9 @@ public class DataServiceImp implements DataService {
                               @NonNull final DataDto dto, @NonNull final User user) {
     List<Tag> tags = (List<Tag>) tagRepository.findAllById(dto.getIdTags());
     if (tags.isEmpty()) {
-      throw new NullPointerException();
+      throw new TagNotFoundException(dto.getIdTags(), dto);
     }
-    Data data = Data.builder()
+    var data = Data.builder()
         .name(dto.getName())
         .value(dto.getValue())
         .user(user)
@@ -37,7 +38,12 @@ public class DataServiceImp implements DataService {
         .build();
     data = dataRepository.save(data);
     data.getTags().addAll(tags);
-    data = dataRepository.save(data);
+    final var dt = dataRepository.save(data);
+    tags.stream().map(tag -> {
+      tag.getDatas().add(dt);
+      return tag;
+    });
+    tagRepository.saveAll(tags);
     return data.toOutput();
   }
 }

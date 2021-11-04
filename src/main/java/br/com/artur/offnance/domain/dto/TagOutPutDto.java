@@ -31,7 +31,7 @@ public class TagOutPutDto {
 
 
   @JsonProperty("type")
-  private TypeOutPutDto type;
+  private TypeOutputDto type;
 
   @JsonProperty("person")
   private PersonOutPutDto person;
@@ -42,7 +42,7 @@ public class TagOutPutDto {
   @NoArgsConstructor
   @EqualsAndHashCode
   @Setter
-  public static class TypeOutPutDto {
+  public static class TypeOutputDto {
 
     @JsonProperty("name")
     private String name;

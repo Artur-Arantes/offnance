@@ -7,6 +7,7 @@ import br.com.artur.offnance.domain.dto.DataDto;
 import br.com.artur.offnance.domain.dto.DataOutPutDto;
 import br.com.artur.offnance.service.DataService;
 import javax.servlet.http.HttpServletResponse;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -22,8 +23,9 @@ public class DataController {
   private final DataService dataService;
 
   @RequestMapping(method = POST, value = "/")
-  public DataOutPutDto create(final HttpServletResponse response, @RequestBody final DataDto dto,
-                              @AuthenticationPrincipal User user){
-    return dataService.create(response,dto,user);
+  public DataOutPutDto create(@NonNull final HttpServletResponse response,
+                              @NonNull @RequestBody final DataDto dto,
+                              @NonNull @AuthenticationPrincipal  User user) {
+    return dataService.create(response, dto, user);
   }
 }
