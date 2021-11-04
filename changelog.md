@@ -12,3 +12,6 @@
 ## 0.3.0 TASK (#1qer2tq)
 ### feat
  - adiciona mais configuracoes de cors e controller advice
+## 0.4.0 TASK (#1qer2tq)
+### fix
+ - add origin pattern
