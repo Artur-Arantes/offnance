@@ -32,7 +32,7 @@ public class TagServiceImp implements TagService {
     }
     final var typeOptional = typeRepository.findById(dto.getIdType());
     if (!typeOptional.isPresent()) {
-      throw new TypeNotFoundException(user.getUsername(), dto.getIdType());
+      throw new TypeNotFoundException(user.getUsername(),dto.getIdType());
     }
     var tag = Tag.builder().name(dto.getName())
         .user(user)

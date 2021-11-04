@@ -37,10 +37,6 @@ import org.springframework.security.core.GrantedAuthority;
 @Generated
 public class Permission extends BaseEntity implements GrantedAuthority {
 
-  @Id
-  @Column(name = "id_per")
-  @GeneratedValue(strategy = GenerationType.AUTO)
-  private Long id;
 
   @Convert(converter = EnumUserPermission.Converter.class)
   @Column(name = "nom_per")

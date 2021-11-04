@@ -27,6 +27,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -78,7 +80,14 @@ public class User extends BaseEntity implements UserDetails {
   @ToString.Exclude
   private Set<Type> types;
 
-  @OneToMany(mappedBy = "user", targetEntity = Tag.class, fetch = FetchType.LAZY)
+
+  @LazyCollection(LazyCollectionOption.FALSE)
+  @OneToMany(mappedBy = "user", targetEntity = Data.class)
+  @JsonBackReference
+  @Setter
+  private List<Data> dates;
+
+@OneToMany(mappedBy = "user", targetEntity = Tag.class, fetch = FetchType.LAZY)
   @JsonBackReference
   @ToString.Exclude
   private Set<Tag> tags;

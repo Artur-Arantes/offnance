@@ -1,17 +1,16 @@
 package br.com.artur.offnance.controller;
 
-
-import static java.text.MessageFormat.format;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import br.com.artur.offnance.OffnanceDataBaseContainer;
-import br.com.artur.offnance.domain.dto.TagDto;
-import br.com.artur.offnance.domain.dto.TagOutPutDto;
-import br.com.artur.offnance.exceptions.TypeNotFoundException;
-import br.com.artur.offnance.service.TagService;
+import br.com.artur.offnance.domain.dto.DataDto;
+import br.com.artur.offnance.domain.dto.DataOutPutDto;
+import br.com.artur.offnance.service.DataService;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,15 +25,13 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Testcontainers(disabledWithoutDocker = true)
-@DisplayName("Teste para integração da tag")
-public class TagControllerIntegrationTest {
-
-
+@DisplayName("Teste para integração de Dados")
+public class DataControllerIntegrationTest {
   private String token;
 
   private Map<String, String> headers;
 
-  private TagService tagService;
+  private DataService dataService;
 
 
   @LocalServerPort
@@ -51,7 +48,6 @@ public class TagControllerIntegrationTest {
   }
 
 
-
   @BeforeEach
   void setUp() {
     RestAssured.port = port;
@@ -61,8 +57,9 @@ public class TagControllerIntegrationTest {
         "Authorization", "Bearer " + token,
         "Content-Type", "application/json"
     );
-  }
 
+
+  }
 
   private String getToken() {
     String token = RestAssured.given().contentType(ContentType.URLENC)
@@ -78,50 +75,49 @@ public class TagControllerIntegrationTest {
   }
 
   @Nested
-  @DisplayName("Testando o metodo Create")
-  class Create {
+  @DisplayName("testes para o metodo create")
+  class CreateTest {
 
     @Test
     @DisplayName("testando sucess")
     public void success() {
+      List<Long> idTag = new ArrayList<>();
+      idTag.add(1l);
       final var name = "anything";
-      TagOutPutDto tagOutPutDto = TagOutPutDto.builder().name(name)
+      DataOutPutDto dataOutPutDto = DataOutPutDto.builder().name(name)
+          .user(DataOutPutDto.UserOutPutDto.builder().username("admin").build())
           .id(1L)
-          .user(TagOutPutDto.UserOutPutDto.builder().username("admin").build())
-          .person(TagOutPutDto.PersonOutPutDto.builder().name("anyone").build())
-          .type(TagOutPutDto.TypeOutPutDto.builder().name("anything").build())
+          .status("any")
+          .value(new BigDecimal("1"))
+          .name(name)
           .build();
-      TagDto dto =
-          TagDto.builder().idPerson(1L).idType(1L).name(name).percentage(new BigDecimal("1"))
-              .build();
-      final var tag = RestAssured.given().headers(headers)
+      DataDto dto = DataDto.builder().name(name)
+          .value(new BigDecimal("1"))
+          .status("any")
+          .idTags(idTag)
+          .name(name)
+          .build();
+      final var data = RestAssured.given().headers(headers)
           .body(dto)
           .when()
-          .post("api/tags/")
+          .post("api/data/")
           .then()
           .statusCode(HttpStatus.OK.value())
           .extract().jsonPath()
-          .getObject("", TagOutPutDto.class);
-      assertThat(tag).isEqualTo(tagOutPutDto);
+          .getObject("", DataOutPutDto.class);
+      assertThat(data).isEqualTo(dataOutPutDto);
     }
-
-    @Test
-    @DisplayName("testando not found type")
-    public void not_found_type() {
-      final var name = "anything";
-      final var exception = format(TypeNotFoundException.ERROR_MESSAGE, "admin", "900");
-      TagDto dto =
-          TagDto.builder().idPerson(1L).idType(900L).name(name).percentage(new BigDecimal("1"))
-              .build();
-      final var result = RestAssured.given().headers(headers)
-          .body(dto)
-          .when()
-          .post("api/tags/")
-          .then()
-          .statusCode(HttpStatus.BAD_REQUEST.value())
-          .extract().body().asString();
-      assertThat(result).isNotBlank().isEqualTo(exception);
-    }
+//    @Test
+//    @DisplayName("teste de login com falha")
+//    void testLoginFailure() {
+//      RestAssured.given().contentType(ContentType.URLENC)
+//          .formParam("username", "admin")
+//          .formParam("password", "x")
+//          .when()
+//          .post("/api/login")
+//          .then()
+//          .statusCode(HttpStatus.UNAUTHORIZED.value());
+//    }
 
   }
 }
