@@ -15,3 +15,6 @@
 ## 0.4.0 TASK (#1qer2tq)
 ### fix
  - add origin pattern
+## 0.5.0 TASK (#1qerqp2)
+### feat
+ - adjusts in data controller
