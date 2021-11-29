@@ -9,6 +9,9 @@ import br.com.artur.offnance.service.TypeService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,5 +32,20 @@ public class TypeServiceImp implements TypeService {
         .build();
     type = typeRepository.save(type);
     return type.toOutput();
+  }
+
+
+  @Override
+  @Transactional
+  public Page<TypeOutputDto> findAll(int page, int quantity) {
+    Pageable pages = PageRequest.of(page, quantity);
+    final var type = typeRepository.findAll(pages);
+    return type.map(t -> t.toOutput());
+  }
+
+  @Override
+  @Transactional
+  public TypeOutputDto findById(Long id) {
+    return typeRepository.findById(id).get().toOutput();
   }
 }

@@ -13,6 +13,9 @@ import br.com.artur.offnance.service.TagService;
 import javax.servlet.http.HttpServletResponse;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,5 +48,18 @@ public class TagServiceImp implements TagService {
         .build();
     tag = tagRepository.save(tag);
     return tag.toOutPutDto();
+  }
+
+  @Override
+  @Transactional
+  public Page<TagOutPutDto> findAll(int page, int quantity) {
+    Pageable pages= PageRequest.of(page, quantity);
+    final var tag = tagRepository.findAll(pages);
+    return tag.map(t-> TagOutPutDto.builder().build());
+  }
+  @Override
+  @Transactional
+  public TagOutPutDto findById(Long id){
+   return  tagRepository.findById(id).get().toOutPutDto();
   }
 }
