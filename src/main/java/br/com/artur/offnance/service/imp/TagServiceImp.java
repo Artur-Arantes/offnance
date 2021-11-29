@@ -10,6 +10,8 @@ import br.com.artur.offnance.repositories.PersonRepository;
 import br.com.artur.offnance.repositories.TagRepository;
 import br.com.artur.offnance.repositories.TypeRepository;
 import br.com.artur.offnance.service.TagService;
+import java.util.ArrayList;
+import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -53,13 +55,21 @@ public class TagServiceImp implements TagService {
   @Override
   @Transactional
   public Page<TagOutPutDto> findAll(int page, int quantity) {
-    Pageable pages= PageRequest.of(page, quantity);
+    Pageable pages = PageRequest.of(page, quantity);
     final var tag = tagRepository.findAll(pages);
-    return tag.map(t-> TagOutPutDto.builder().build());
+    return tag.map(t -> TagOutPutDto.builder().build());
   }
+
   @Override
   @Transactional
-  public TagOutPutDto findById(Long id){
-   return  tagRepository.findById(id).get().toOutPutDto();
+  public TagOutPutDto findById(Long id) {
+    return tagRepository.findById(id).get().toOutPutDto();
+  }
+
+  @Override
+  public List<Long> findAllById(Long listLong) {
+    List<Long> list = new ArrayList<>();
+    tagRepository.findAllById(listLong).forEach(list::add);
+    return list;
   }
 }

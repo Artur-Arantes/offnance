@@ -2,6 +2,7 @@ package br.com.artur.offnance.domain;
 
 import br.com.artur.offnance.domain.dto.DataOutPutDto;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,8 +16,6 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -77,12 +76,12 @@ public class Data extends BaseEntity {
         .name(name)
         .id(id)
         .user(DataOutPutDto.UserOutPutDto.builder().username(user.getUsername()).build())
-            .tags(tags.stream().map(tag ->
-                    DataOutPutDto.TagOutputDto.builder()
-                            .id(tag.getId())
-                            .name(tag.getName())
-                            .build())
-                    .collect(Collectors.toList()))
+        .tags(tags.stream().map(tag ->
+                DataOutPutDto.TagOutputDto.builder()
+                    .id(tag.getId())
+                    .name(tag.getName())
+                    .build())
+            .collect(Collectors.toList()))
         .build();
   }
 }

@@ -42,7 +42,7 @@ public class TypeController {
 
     return typeService.findAll( page,  quantity);
   }
-  @RequestMapping(method = GET, value = "/")
+  @RequestMapping(method = GET, value = "/find")
   @Transactional
   public TypeOutputDto findById(Long id){
     return typeService.findById(id);

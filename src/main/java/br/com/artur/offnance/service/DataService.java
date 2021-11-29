@@ -13,4 +13,6 @@ public interface DataService {
   Page<DataOutPutDto> findAll(int page, int quantity);
 
   DataOutPutDto findById(Long id);
+
+
 }

@@ -10,6 +10,7 @@ import br.com.artur.offnance.domain.dto.TagOutPutDto;
 import br.com.artur.offnance.domain.dto.TypeDto;
 import br.com.artur.offnance.exceptions.PersonNotFoundException;
 import br.com.artur.offnance.exceptions.TypeNotFoundException;
+import br.com.artur.offnance.service.TagService;
 import io.restassured.RestAssured;
 import java.math.BigDecimal;
 import java.util.Map;
@@ -20,6 +21,8 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -33,6 +36,8 @@ public class TagControllerIntegrationTest extends BaseControllerIntegrationTest 
   private String token;
 
   private Map<String, String> headers;
+
+  private TagService tagService;
 
 
   @LocalServerPort
@@ -74,7 +79,7 @@ public class TagControllerIntegrationTest extends BaseControllerIntegrationTest 
           .user(TagOutPutDto.UserOutPutDto.builder().username("admin").build())
           .person(TagOutPutDto.PersonOutPutDto.builder().name("artur").build())
           .type(TagOutPutDto.TypeOutputDto.builder().name("anything").build())
-              .percentage(percentage)
+          .percentage(percentage)
           .build();
       TagDto dto = TagDto.builder().idPerson(1L).idType(typeOutputDto.getId()).name(name)
           .percentage(percentage)
@@ -125,5 +130,34 @@ public class TagControllerIntegrationTest extends BaseControllerIntegrationTest 
           .statusCode(HttpStatus.BAD_REQUEST.value())
           .extract().body().asString();
       assertThat(result).isNotBlank().isEqualTo(exception);
-    }  }
+    }
+  }
+
+  @Test
+  @DisplayName("testando o sucesso do metodo find all")
+  public void findAll_success() {
+    int page = 1;
+    int quantity = 2;
+    final var percentage = BigDecimal.valueOf(FAKER.number().numberBetween(0, 100));
+    Pageable pages = PageRequest.of(page, quantity);
+    final var name = "anything";
+    TagDto dto = TagDto.builder().name(name).build();
+    TagOutPutDto tagOutPutDto = TagOutPutDto.builder().name(name)
+        .user(TagOutPutDto.UserOutPutDto.builder().username("admin").build())
+        .person(TagOutPutDto.PersonOutPutDto.builder().name("artur").build())
+        .type(TagOutPutDto.TypeOutputDto.builder().name("anything").build())
+        .percentage(percentage)
+        .build();
+    final var result = RestAssured.given().headers(headers)
+        .queryParam("quantity", 1)
+        .queryParam("page",1)
+        .when()
+        .get("api/tags/")
+        .then()
+        .statusCode(HttpStatus.OK.value())
+        .extract().jsonPath()
+        .getObject("", Pageable.class);
+
+    assertThat(result).isEqualTo(pages);
+  }
 }
