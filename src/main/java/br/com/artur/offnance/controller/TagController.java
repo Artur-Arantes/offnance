@@ -45,7 +45,7 @@ public class TagController {
 
     return tagService.findAll(page, quantity);
   }
-  @RequestMapping
+  @RequestMapping(method = GET, value = "/find")
   @Transactional
   public TagOutPutDto findById(@NonNull final HttpServletResponse response,
                                @NonNull @RequestBody final TagDto tagDto,

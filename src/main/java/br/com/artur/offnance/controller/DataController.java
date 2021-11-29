@@ -42,7 +42,7 @@ public class DataController {
                                      @RequestParam int page, @RequestParam int quantity){
     return dataService.findAll(page,quantity);
   }
-  @RequestMapping(method =  GET, value = "/")
+  @RequestMapping(method =  GET, value = "/find")
   @Transactional
   public DataOutPutDto findById(@NonNull final HttpServletResponse response,
                                 @NonNull @RequestBody final DataDto dto,
