@@ -13,6 +13,9 @@ import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -46,4 +49,20 @@ public class DataServiceImp implements DataService {
     tagRepository.saveAll(tags);
     return data.toOutput();
   }
+
+  @Override
+  @Transactional
+  public Page<DataOutPutDto> findAll(int page, int quantity) {
+    Pageable pages = PageRequest.of(page, quantity);
+    final var data = dataRepository.findAll(pages);
+    return data.map(d -> d.toOutput());
+  }
+
+  @Override
+  @Transactional
+  public DataOutPutDto findById(Long id) {
+    return dataRepository.findById(id).get().toOutput();
+  }
+
+
 }
