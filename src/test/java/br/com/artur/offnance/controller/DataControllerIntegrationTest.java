@@ -4,15 +4,12 @@ import static java.text.MessageFormat.format;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import br.com.artur.offnance.OffnanceDataBaseContainer;
+import br.com.artur.offnance.domain.DataPagedList;
 import br.com.artur.offnance.domain.dto.DataDto;
 import br.com.artur.offnance.domain.dto.DataOutPutDto;
 import br.com.artur.offnance.domain.dto.TagDto;
-import br.com.artur.offnance.domain.dto.TagOutPutDto;
 import br.com.artur.offnance.domain.dto.TypeDto;
-import br.com.artur.offnance.domain.dto.TypeOutputDto;
-import br.com.artur.offnance.service.DataService;
 import io.restassured.RestAssured;
-import io.restassured.http.ContentType;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,9 +32,6 @@ public class DataControllerIntegrationTest extends BaseControllerIntegrationTest
   private String token;
 
   private Map<String, String> headers;
-
-  private DataService dataService;
-
 
   @LocalServerPort
   private Integer port;
@@ -75,8 +69,9 @@ public class DataControllerIntegrationTest extends BaseControllerIntegrationTest
     public void success() {
       final var typeOutputDto = createType(headers, TypeDto.builder().name("genericType").build());
       List<Long> idTags = new ArrayList<>();
-      for (int i=0; i < 10; i++) {
-        final var tag = createTag(headers, TagDto.builder().idPerson(1L).idType(typeOutputDto.getId())
+      for (int i = 0; i < 10; i++) {
+        final var tag =
+            createTag(headers, TagDto.builder().idPerson(1L).idType(typeOutputDto.getId())
                 .name(format("Tag {0}", i))
                 .percentage(BigDecimal.valueOf(FAKER.number().numberBetween(0, 100)))
                 .build());
@@ -101,19 +96,58 @@ public class DataControllerIntegrationTest extends BaseControllerIntegrationTest
           .statusCode(HttpStatus.OK.value())
           .extract().jsonPath()
           .getObject("", DataOutPutDto.class);
+      dataOutPutDto.setId(data.getId());
       assertThat(data).isEqualTo(dataOutPutDto);
     }
-//    @Test
-//    @DisplayName("teste de login com falha")
-//    void testLoginFailure() {
-//      RestAssured.given().contentType(ContentType.URLENC)
-//          .formParam("username", "admin")
-//          .formParam("password", "x")
-//          .when()
-//          .post("/api/login")
-//          .then()
-//          .statusCode(HttpStatus.UNAUTHORIZED.value());
-//    }
+  }
 
+  @Nested
+  @DisplayName("testando o metodo Find All")
+  public class FindAll {
+
+    @Test
+    @DisplayName("testando o sucesso do metodo")
+    public void success() {
+      final var typeOutputDto = createType(headers, TypeDto.builder().name("genericType").build());
+      List<Long> idTags = new ArrayList<>();
+      for (int i = 0; i < 10; i++) {
+        final var tag =
+            createTag(headers, TagDto.builder().idPerson(1L).idType(typeOutputDto.getId())
+                .name(format("Tag {0}", i))
+                .percentage(BigDecimal.valueOf(FAKER.number().numberBetween(0, 100)))
+                .build());
+        idTags.add(tag.getId());
+      }
+      final var name = "anything";
+      final var value = BigDecimal.valueOf(FAKER.number().numberBetween(0, 1000));
+      final var dataOutPutDto = DataOutPutDto.builder()
+          .id(1L)
+          .build();
+      DataDto dto = DataDto.builder().name(name)
+          .value(value)
+          .status("any")
+          .idTags(idTags)
+          .name(name)
+          .build();
+      final var data = RestAssured.given().headers(headers)
+          .body(dto)
+          .when()
+          .post("api/data/")
+          .then()
+          .statusCode(HttpStatus.OK.value())
+          .extract().jsonPath()
+          .getObject("", DataOutPutDto.class);
+      final var result = RestAssured.given().headers(headers)
+          .queryParam("pageNumber", 0)
+          .queryParam("pageSize", 1)
+          .when()
+          .get("api/data/")
+          .then()
+          .statusCode(HttpStatus.OK.value())
+          .extract().jsonPath()
+          .getObject("", DataPagedList.class);
+
+      assertThat(result).hasSize(1).element(0).isEqualTo(data);
+    }
   }
 }

@@ -4,10 +4,11 @@ import br.com.artur.offnance.domain.Tag;
 import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.PagingAndSortingRepository;
 
-public interface TagRepository extends CrudRepository<Tag, Long> {
-  Page<Tag> findAll(Pageable pages);
+public interface TagRepository extends PagingAndSortingRepository<Tag, Long> {
 
   List<Long> findAllById(Long listLong);
+
+  Page<Tag> findAll(Pageable page);
 }

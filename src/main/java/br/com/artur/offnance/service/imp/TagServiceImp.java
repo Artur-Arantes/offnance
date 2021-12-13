@@ -1,6 +1,7 @@
 package br.com.artur.offnance.service.imp;
 
 import br.com.artur.offnance.domain.Tag;
+import br.com.artur.offnance.domain.TagPagedList;
 import br.com.artur.offnance.domain.User;
 import br.com.artur.offnance.domain.dto.TagDto;
 import br.com.artur.offnance.domain.dto.TagOutPutDto;
@@ -10,14 +11,11 @@ import br.com.artur.offnance.repositories.PersonRepository;
 import br.com.artur.offnance.repositories.TagRepository;
 import br.com.artur.offnance.repositories.TypeRepository;
 import br.com.artur.offnance.service.TagService;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletResponse;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -54,11 +52,17 @@ public class TagServiceImp implements TagService {
 
   @Override
   @Transactional
-  public Page<TagOutPutDto> findAll(int page, int quantity) {
-    Pageable pages = PageRequest.of(page, quantity);
-    final var tag = tagRepository.findAll(pages);
-    return tag.map(t -> TagOutPutDto.builder().build());
+  public TagPagedList findAll(PageRequest pageRequest) {
+    final var tagPages = tagRepository.findAll(pageRequest);
+    TagPagedList tagPagedList = new TagPagedList(tagPages.getContent()
+        .stream()
+        .map(t -> t.toOutPutDto())
+        .collect(Collectors.toList()), PageRequest.of(tagPages.getPageable().getPageNumber(),
+        tagPages.getPageable().getPageSize()), tagPages.getTotalElements());
+    return tagPagedList;
+
   }
+
 
   @Override
   @Transactional
@@ -66,10 +70,5 @@ public class TagServiceImp implements TagService {
     return tagRepository.findById(id).get().toOutPutDto();
   }
 
-  @Override
-  public List<Long> findAllById(Long listLong) {
-    List<Long> list = new ArrayList<>();
-    tagRepository.findAllById(listLong).forEach(list::add);
-    return list;
-  }
+
 }

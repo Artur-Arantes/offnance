@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-@EqualsAndHashCode(of="id")
+@EqualsAndHashCode(of = "id")
 public class DataDto {
 
 
