@@ -3,12 +3,17 @@ package br.com.artur.offnance.controller;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 import br.com.artur.offnance.OffnanceDataBaseContainer;
+import br.com.artur.offnance.domain.TagPagedList;
+import br.com.artur.offnance.domain.TypePagedList;
+import br.com.artur.offnance.domain.dto.TagDto;
 import br.com.artur.offnance.domain.dto.TypeDto;
 import br.com.artur.offnance.domain.dto.TypeOutputDto;
 import io.restassured.RestAssured;
 
+import java.math.BigDecimal;
 import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -76,6 +81,31 @@ public class TypeControllerIntegrationTest extends BaseControllerIntegrationTest
           .getObject("", TypeOutputDto.class);
       typeOutputDto.setId(type.getId());
       assertThat(type).isEqualTo(typeOutputDto);
+    }
+  }
+  @Nested
+  @DisplayName("testando o findAll")
+  class findAll{
+
+    @Test
+    @DisplayName("testando o sucesso do metodo")
+    void findAlL_success(){
+      final var percentage = BigDecimal.valueOf(FAKER.number().numberBetween(0, 100));
+      final var typeOutputDto = createType(headers, TypeDto.builder().name(
+          FAKER.harryPotter().book()
+      ).build());
+
+      final var result = RestAssured.given().headers(headers)
+          .queryParam("pageNumber", 0)
+          .queryParam("pageSize", 1)
+          .when()
+          .get("api/type/")
+          .then()
+          .statusCode(HttpStatus.OK.value())
+          .extract().jsonPath()
+          .getObject("", TypePagedList.class);
+
+      Assertions.assertThat(result).hasSize(1).element(0).isEqualTo(typeOutputDto);
     }
   }
 }

@@ -17,6 +17,8 @@ import br.com.artur.offnance.repositories.PersonRepository;
 import br.com.artur.offnance.repositories.TagRepository;
 import br.com.artur.offnance.repositories.TypeRepository;
 import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import javax.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,6 +29,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 @ExtendWith(MockitoExtension.class)
 public class TagServiceImplTest {
@@ -91,28 +96,28 @@ public class TagServiceImplTest {
       User user = mock(User.class);
       Type type = mock(Type.class);
       TagDto tagDto = TagDto.builder().name(name)
-              .idPerson(1l)
-              .idType(1L)
-              .percentage(new BigDecimal("1"))
-              .build();
+          .idPerson(1l)
+          .idType(1L)
+          .percentage(new BigDecimal("1"))
+          .build();
       TagOutPutDto tagOutPutDto = TagOutPutDto.builder()
-              .name(name)
-              .type(TagOutPutDto.TypeOutputDto.builder().name("whosKnow").build())
-              .user(TagOutPutDto.UserOutPutDto.builder().username("anyone").build())
-              .person(TagOutPutDto.PersonOutPutDto.builder().name("Jim carry").build())
-              .percentage(new BigDecimal("1"))
-              .build();
+          .name(name)
+          .type(TagOutPutDto.TypeOutputDto.builder().name("whosKnow").build())
+          .user(TagOutPutDto.UserOutPutDto.builder().username("anyone").build())
+          .person(TagOutPutDto.PersonOutPutDto.builder().name("Jim carry").build())
+          .percentage(new BigDecimal("1"))
+          .build();
       when(personRepository.findById(tagDto.getIdPerson())).thenReturn(Optional.of(person));
       when(typeRepository.findById(tagDto.getIdType())).thenReturn(Optional.empty());
       assertThatExceptionOfType(TypeNotFoundException.class)
-              .isThrownBy(() -> tagServiceImp.create(response, user, tagDto));
+          .isThrownBy(() -> tagServiceImp.create(response, user, tagDto));
     }
 
     @Test
     @DisplayName("com todas entradas nulas")
-    public void null_entry(){
-      assertThatExceptionOfType(NullPointerException.class).isThrownBy(()->
-          tagServiceImp.create(null,null,null));
+    public void null_entry() {
+      assertThatExceptionOfType(NullPointerException.class).isThrownBy(() ->
+          tagServiceImp.create(null, null, null));
     }
 
     @Test
@@ -123,7 +128,7 @@ public class TagServiceImplTest {
           .idType(1L)
           .percentage(new BigDecimal("1"))
           .build();
-      HttpServletResponse response=mock(HttpServletResponse.class);
+      HttpServletResponse response = mock(HttpServletResponse.class);
       assertThatExceptionOfType(NullPointerException.class).isThrownBy(() ->
           tagServiceImp.create(response, null, tagDto));
     }
@@ -131,10 +136,33 @@ public class TagServiceImplTest {
     @Test
     @DisplayName("terceiro parametro nulo")
     public void third_param_null() {
-      HttpServletResponse response=mock(HttpServletResponse.class);
-      User user= mock(User.class);
+      HttpServletResponse response = mock(HttpServletResponse.class);
+      User user = mock(User.class);
       assertThatExceptionOfType(NullPointerException.class).isThrownBy(() ->
           tagServiceImp.create(response, user, null));
+    }
+
+    @Nested
+    @DisplayName("testando o metodo findAll")
+    public class findAll {
+
+      @Test
+      @DisplayName("tesntando o sucesso do metodo")
+      public void success() {
+        final var tagPagedList = mock(Page.class);
+        final var pageRequest = mock(PageRequest.class);
+        final var tag = mock(Tag.class);
+        final var pageable = mock(Pageable.class);
+        List<Tag> faker = Arrays.asList(tag);
+        when(pageable.getPageNumber()).thenReturn(1);
+        when(pageable.getPageSize()).thenReturn(2);
+        when(tagPagedList.getContent()).thenReturn(faker);
+        when(tagPagedList.getPageable()).thenReturn(pageable);
+        when(tagRepository.findAll(pageRequest)).thenReturn(tagPagedList);
+        assertThat(tagServiceImp.findAll(pageRequest)).isNotNull()
+            .isInstanceOf(Page.class);
+
+      }
     }
   }
 }
