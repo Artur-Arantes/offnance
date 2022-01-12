@@ -3,5 +3,6 @@
 [![CircleCI](https://circleci.com/gh/Artur-Arantes/offnance/tree/main.svg?style=svg)](https://circleci.com/gh/Artur-Arantes/offnance/tree/main)
 
 ##Hi there!#
-## This project was build by me in partnership with my brother Henrique Arantes Tiraboschi.##
-##The goal of this project is personal financial control.##
+##The goal here is personal financial control.##
+##This project was build by me in partnership with my brother Henrique Arantes Tiraboschi##
+
