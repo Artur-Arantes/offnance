@@ -21,3 +21,6 @@
 ## 0.6.0 TASK 
 ### feat
  - added banner
+## 0.7.0 TASK (#234jt)
+### feat
+ - data controller and service tests.
