@@ -18,3 +18,9 @@
 ## 0.5.0 TASK (#1qerqp2)
 ### feat
  - adjusts in data controller
+## 0.6.0 TASK 
+### feat
+ - added banner
+## 0.7.0 TASK (#234jt)
+### feat
+ - data controller and service tests.
