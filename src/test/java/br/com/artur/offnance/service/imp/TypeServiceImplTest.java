@@ -12,6 +12,8 @@ import br.com.artur.offnance.domain.dto.TypeDto;
 import br.com.artur.offnance.domain.dto.TypeOutputDto;
 import br.com.artur.offnance.repositories.TypeRepository;
 import br.com.artur.offnance.repositories.UserRepository;
+import java.util.Arrays;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -20,6 +22,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 @ExtendWith(MockitoExtension.class)
 public class TypeServiceImplTest {
@@ -87,6 +92,29 @@ public class TypeServiceImplTest {
       TypeDto typeDto = TypeDto.builder().name(name).build();
       assertThatExceptionOfType(RuntimeException.class).isThrownBy(
           () -> typeServiceImp.create(typeDto, null));
+    }
+  }
+
+  @Nested
+  @DisplayName("tesntando o metodo findAll")
+  class FindAll {
+
+    @Test
+    @DisplayName("tesntando o sucesso do metodo ")
+    public void success() {
+      final var typePagedList = mock(Page.class);
+      final var pageRequest = mock(PageRequest.class);
+      final var type = mock(Type.class);
+      final var pageable = mock(Pageable.class);
+      List<Type> faker = Arrays.asList(type);
+      when(pageable.getPageNumber()).thenReturn(1);
+      when(pageable.getPageSize()).thenReturn(2);
+      when(typePagedList.getContent()).thenReturn(faker);
+      when(typePagedList.getPageable()).thenReturn(pageable);
+      when(typeRepository.findAll(pageRequest)).thenReturn(typePagedList);
+      assertThat(typeServiceImp.findAll(pageRequest)).isNotNull()
+          .isInstanceOf(Page.class);
+
     }
   }
 }
