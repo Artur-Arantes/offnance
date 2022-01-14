@@ -4,6 +4,6 @@
 
 ##Hello there!! =)##
 
-##Thanks for visiting my project, this is the first one idealized e produced by me in partership with brother##
+##Thanks for visiting my project, this is the first one idealized and produced by me in partnership with my brother##
 
 ##The goal here is financial personal control##
