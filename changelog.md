@@ -21,3 +21,6 @@
 ## 0.6.0 TASK (#456jv)
 ### feat
  - adding unit tests.
+## 0.7.0 TASK (#5jel)
+### feat
+ - update readme file
