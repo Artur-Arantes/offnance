@@ -24,3 +24,6 @@
 ## 0.7.0 TASK (#5jel)
 ### feat
  - update readme file
+## 0.8.0 TASK (#1x07d7b)
+### feat
+ - adding tagtext
