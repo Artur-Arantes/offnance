@@ -1,5 +1,7 @@
 package br.com.artur.offnance.domain;
 
+import static java.util.Objects.isNull;
+
 import br.com.artur.offnance.domain.dto.TagOutPutDto;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import java.math.BigDecimal;
@@ -21,6 +23,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Generated;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import lombok.ToString;
 
 @Entity
@@ -84,6 +87,13 @@ public class Tag extends BaseEntity {
       datas = new ArrayList<>();
     }
     return datas;
+  }
+
+  public void addTexts(final @NonNull List<Text> fetched) {
+    if (isNull(texts)) {
+      texts = new ArrayList<>();
+    }
+    texts.addAll(fetched);
   }
 
   public TagOutPutDto toOutPutDto() {
