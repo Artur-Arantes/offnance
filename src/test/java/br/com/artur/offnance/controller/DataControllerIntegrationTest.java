@@ -67,14 +67,24 @@ public class DataControllerIntegrationTest extends BaseControllerIntegrationTest
     @Test
     @DisplayName("Teste de sucesso")
     public void success() {
+      final var id = 1L;
+      List<String> faker = new ArrayList<>();
+      final var fake = "any";
+      final var other = "other";
+      faker.add(fake);
+      faker.add(other);
       final var typeOutputDto = createType(headers, TypeDto.builder().name("genericType").build());
       List<Long> idTags = new ArrayList<>();
-      for (int i = 0; i < 10; i++) {
+      for (int i = 0; i < 2; i++) {
+        List<String> clone = new ArrayList<>();
+        clone.add(faker.get(i));
         final var tag =
             createTag(headers, TagDto.builder().idPerson(1L).idType(typeOutputDto.getId())
                 .name(format("Tag {0}", i))
                 .percentage(BigDecimal.valueOf(FAKER.number().numberBetween(0, 100)))
+                .texts(clone)
                 .build());
+        tag.setId(id + i);
         idTags.add(tag.getId());
       }
       final var name = "anything";
@@ -108,14 +118,24 @@ public class DataControllerIntegrationTest extends BaseControllerIntegrationTest
     @Test
     @DisplayName("testando o sucesso do metodo")
     public void success() {
+      final var id = 1L;
+      List<String> faker = new ArrayList<>();
+      final var fake = "any";
+      final var other = "other";
+      faker.add(fake);
+      faker.add(other);
       final var typeOutputDto = createType(headers, TypeDto.builder().name("genericType").build());
       List<Long> idTags = new ArrayList<>();
-      for (int i = 0; i < 10; i++) {
+      for (int i = 0; i < 2; i++) {
+        List<String> clone = new ArrayList<>();
+        clone.add(faker.get(i));
         final var tag =
             createTag(headers, TagDto.builder().idPerson(1L).idType(typeOutputDto.getId())
                 .name(format("Tag {0}", i))
                 .percentage(BigDecimal.valueOf(FAKER.number().numberBetween(0, 100)))
+                .texts(clone)
                 .build());
+        tag.setId(id + i);
         idTags.add(tag.getId());
       }
       final var name = "anything";

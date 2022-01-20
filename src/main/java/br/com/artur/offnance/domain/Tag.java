@@ -103,7 +103,6 @@ public class Tag extends BaseEntity {
         .user(TagOutPutDto.UserOutPutDto.builder().username(user.getUsername()).build())
         .person(TagOutPutDto.PersonOutPutDto.builder().name(person.getName()).build())
         .type(TagOutPutDto.TypeOutputDto.builder().name(type.getName()).build())
-        .id(getId())
         .percentage(getPercentage())
         .build();
     return tagOutPutDto;

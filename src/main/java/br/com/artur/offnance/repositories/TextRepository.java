@@ -6,5 +6,5 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface TextRepository extends CrudRepository<Text, Long> {
 
-  List<Text> findAllByText(List<String> text);
+  List<Text> findAllByTextIn(List<String> text);
 }
