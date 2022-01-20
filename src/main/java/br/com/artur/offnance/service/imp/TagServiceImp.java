@@ -43,7 +43,7 @@ public class TagServiceImp implements TagService {
     if (!typeOptional.isPresent()) {
       throw new TypeNotFoundException(user.getUsername(), dto.getIdType());
     }
-    final var fetched = textRepository.findAllByText(dto.getTexts());
+    final var fetched = textRepository.findAllByTextIn(dto.getTexts());
 
     final var notCreatedTexts = dto.getTexts().stream()
         .filter(txt -> fetched.stream().noneMatch(entity -> txt.equals(entity.getText())))
@@ -60,7 +60,7 @@ public class TagServiceImp implements TagService {
         .build();
     tag = tagRepository.save(tag);
 
-    tag.addTexts(notCreatedTexts);
+    tag.addTexts(fetched);
 
     tag = tagRepository.save(tag);
 

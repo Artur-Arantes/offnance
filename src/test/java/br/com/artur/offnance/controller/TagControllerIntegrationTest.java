@@ -14,6 +14,7 @@ import br.com.artur.offnance.exceptions.TypeNotFoundException;
 import br.com.artur.offnance.repositories.TagRepository;
 import io.restassured.RestAssured;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.BeforeEach;
@@ -75,7 +76,8 @@ public class TagControllerIntegrationTest extends BaseControllerIntegrationTest 
     @DisplayName("testando sucess")
     public void success() {
       final var name = "anything";
-      final var typeOutputDto = createType(headers, TypeDto.builder().name("anything").build());
+      final var typeOutputDto = createType(headers, TypeDto.builder().name("anything")
+          .build());
       final var percentage = BigDecimal.valueOf(FAKER.number().numberBetween(0, 100));
       final var tagOutPutDto = TagOutPutDto.builder().name(name)
           .user(TagOutPutDto.UserOutPutDto.builder().username("admin").build())
@@ -83,7 +85,11 @@ public class TagControllerIntegrationTest extends BaseControllerIntegrationTest 
           .type(TagOutPutDto.TypeOutputDto.builder().name("anything").build())
           .percentage(percentage)
           .build();
+      ArrayList<String> faker = new ArrayList<>();
+      final var fake = "any";
+      faker.add(fake);
       final var dto = TagDto.builder().idPerson(1L).idType(typeOutputDto.getId()).name(name)
+          .texts(faker)
           .percentage(percentage)
           .build();
       final var tag = RestAssured.given().headers(headers)
@@ -102,7 +108,8 @@ public class TagControllerIntegrationTest extends BaseControllerIntegrationTest 
     @DisplayName("testando not found type")
     public void type_not_found() {
       final var name = "anything";
-      final var exception = format(TypeNotFoundException.ERROR_MESSAGE, "admin", "900");
+      final var exception = format(TypeNotFoundException.ERROR_MESSAGE,
+          "admin", "900");
       final var dto =
           TagDto.builder().idPerson(1L).idType(900L).name(name).percentage(new BigDecimal("1"))
               .build();
@@ -143,6 +150,9 @@ public class TagControllerIntegrationTest extends BaseControllerIntegrationTest 
     @Test
     @DisplayName("testando o sucesso do metodo find all")
     public void findAll_success() {
+      ArrayList<String> faker = new ArrayList<>();
+      final var fake = "any";
+      faker.add(fake);
       final var percentage = BigDecimal.valueOf(FAKER.number().numberBetween(0, 100));
       final var typeOutputDto = createType(headers, TypeDto.builder().name(
           FAKER.harryPotter().book()
@@ -151,8 +161,9 @@ public class TagControllerIntegrationTest extends BaseControllerIntegrationTest 
           createTag(headers, TagDto.builder().idPerson(1L).idType(typeOutputDto.getId())
               .name(FAKER.harryPotter().character())
               .percentage(BigDecimal.valueOf(FAKER.number().numberBetween(0, 100)))
+              .texts(faker)
               .build());
-      tagOutPutDto.setId(1L);
+      ;
       final var result = RestAssured.given().headers(headers)
           .queryParam("pageNumber", 0)
           .queryParam("pageSize", 1)
@@ -167,39 +178,44 @@ public class TagControllerIntegrationTest extends BaseControllerIntegrationTest 
     }
   }
 
-    @Nested
-    @DisplayName(" Testando o metodo Find By Id")
-    public class FindById {
 
-      @Test
-      @DisplayName("testando o sucesso do metodo")
-      public void success() {
-        final var name = "anything";
-        final var typeOutputDto = createType(headers, TypeDto.builder().name(
-            FAKER.harryPotter().book()
-        ).build());
-        final var dto =
-            TagDto.builder().idPerson(1L).idType(900L).name(name).percentage(new BigDecimal("1"))
-                .build();
-        final var tagOutPutDto =
-            createTag(headers, TagDto.builder().idPerson(1L).idType(typeOutputDto.getId())
-                .name(FAKER.harryPotter().character())
-                .percentage(BigDecimal.valueOf(FAKER.number().numberBetween(0, 100)))
-                .build());
-        final var result = RestAssured.given().headers(headers)
-            .body(dto)
-            .queryParam("id", 1)
-            .when()
-            .get("api/tags/find")
-            .then()
-            .statusCode(HttpStatus.OK.value())
-            .extract().jsonPath()
-            .getObject("", TagOutPutDto.class);
-        tagOutPutDto.setId(result.getId());
-        assertThat(result).isEqualTo(tagOutPutDto);
-      }
+  @Nested
+  @DisplayName(" Testando o metodo Find By Id")
+  public class FindById {
 
+    @Test
+    @DisplayName("testando o sucesso do metodo")
+    public void success() {
+      final var name = "anything";
+      ArrayList<String> faker = new ArrayList<>();
+      final var fake = "any";
+      faker.add(fake);
+      final var typeOutputDto = createType(headers, TypeDto.builder().name(
+          FAKER.harryPotter().book()
+      ).build());
+      final var dto =
+          TagDto.builder().idPerson(1L).idType(900L).name(name).percentage(new BigDecimal("1"))
+              .texts(faker)
+              .build();
+      final var tagOutPutDto =
+          createTag(headers, TagDto.builder().idPerson(1L).idType(typeOutputDto.getId())
+              .name(FAKER.harryPotter().character())
+              .texts(faker)
+              .percentage(BigDecimal.valueOf(FAKER.number().numberBetween(0, 100)))
+              .build());
+      final var result = RestAssured.given().headers(headers)
+          .body(dto)
+          .queryParam("id", 1)
+          .when()
+          .get("api/tags/find")
+          .then()
+          .statusCode(HttpStatus.OK.value())
+          .extract().jsonPath()
+          .getObject("", TagOutPutDto.class);
+      assertThat(result).isEqualTo(tagOutPutDto);
     }
 
   }
+
+}
 

@@ -94,6 +94,7 @@ public class TypeControllerIntegrationTest extends BaseControllerIntegrationTest
       final var typeOutputDto = createType(headers, TypeDto.builder().name(
           FAKER.harryPotter().book()
       ).build());
+      typeOutputDto.setId(1L);
 
       final var result = RestAssured.given().headers(headers)
           .queryParam("pageNumber", 0)
@@ -107,6 +108,33 @@ public class TypeControllerIntegrationTest extends BaseControllerIntegrationTest
 
       Assertions.assertThat(result).hasSize(1).element(0).isEqualTo(typeOutputDto);
     }
+  }
+  @Nested
+  @DisplayName("testando o findById")
+  class FindById{
+
+    @Test
+    @DisplayName("testando o sucesso do metodo")
+    void  findById_sucess(){
+
+      final var percentage = BigDecimal.valueOf(FAKER.number().numberBetween(0, 100));
+      final var typeOutputDto = createType(headers, TypeDto.builder().name(
+          FAKER.harryPotter().book()
+      ).build());
+      typeOutputDto.setId(1L);
+
+      final var result = RestAssured.given().headers(headers)
+          .queryParam("id", 1)
+          .when()
+          .get("api/type/find")
+          .then()
+          .statusCode(HttpStatus.OK.value())
+          .extract().jsonPath()
+          .getObject("", TypeOutputDto.class);
+
+      Assertions.assertThat(result).isEqualTo(typeOutputDto);
+    }
+
   }
 }
 

@@ -8,6 +8,7 @@ import static org.mockito.Mockito.when;
 
 import br.com.artur.offnance.domain.Person;
 import br.com.artur.offnance.domain.Tag;
+import br.com.artur.offnance.domain.Text;
 import br.com.artur.offnance.domain.Type;
 import br.com.artur.offnance.domain.User;
 import br.com.artur.offnance.domain.dto.TagDto;
@@ -15,8 +16,10 @@ import br.com.artur.offnance.domain.dto.TagOutPutDto;
 import br.com.artur.offnance.exceptions.TypeNotFoundException;
 import br.com.artur.offnance.repositories.PersonRepository;
 import br.com.artur.offnance.repositories.TagRepository;
+import br.com.artur.offnance.repositories.TextRepository;
 import br.com.artur.offnance.repositories.TypeRepository;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -48,6 +51,9 @@ public class TagServiceImplTest {
   @Mock
   TypeRepository typeRepository;
 
+  @Mock
+  TextRepository textRepository;
+
   @BeforeEach
   void setUp() {
 
@@ -65,10 +71,13 @@ public class TagServiceImplTest {
       HttpServletResponse response = mock(HttpServletResponse.class);
       User user = mock(User.class);
       Type type = mock(Type.class);
+      List<String> clone = new ArrayList<>();
+      clone.add("any");
       TagDto tagDto = TagDto.builder().name(name)
           .idPerson(1l)
           .idType(1L)
           .percentage(new BigDecimal("1"))
+          .texts(clone)
           .build();
       TagOutPutDto tagOutPutDto = TagOutPutDto.builder()
           .name(name)
@@ -77,8 +86,11 @@ public class TagServiceImplTest {
           .person(TagOutPutDto.PersonOutPutDto.builder().name("Jim carry").build())
           .percentage(new BigDecimal("1"))
           .build();
+      List<Text> faker = new ArrayList<>();
+      faker.add(Text.builder().text("any").build());
       when(personRepository.findById(tagDto.getIdPerson())).thenReturn(Optional.of(person));
       when(typeRepository.findById(tagDto.getIdType())).thenReturn(Optional.of(type));
+      when(textRepository.findAllByTextIn(tagDto.getTexts())).thenReturn(faker);
       when(tagRepository.save(any(Tag.class))).thenAnswer(invocationOnMock -> {
         Tag tag = invocationOnMock.getArgument(0, Tag.class);
         return tag;
