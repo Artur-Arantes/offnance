@@ -8,6 +8,8 @@ import br.com.artur.offnance.domain.User;
 import br.com.artur.offnance.domain.dto.DataDto;
 import br.com.artur.offnance.domain.dto.DataOutPutDto;
 import br.com.artur.offnance.service.DataService;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -20,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequiredArgsConstructor
+@AllArgsConstructor
 @RequestMapping(value = "api/data", produces = MediaType.APPLICATION_JSON_VALUE)
 public class DataController {
 

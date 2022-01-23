@@ -21,7 +21,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class DataServiceImp implements DataService {
+
   private final DataRepository dataRepository;
+
   private final TagRepository tagRepository;
 
   @Override
@@ -47,6 +49,7 @@ public class DataServiceImp implements DataService {
     tagRepository.saveAll(tags);
     return data.toOutput();
   }
+
   @Override
   @Transactional
   public DataPagedList findAll(PageRequest pageRequest) {
