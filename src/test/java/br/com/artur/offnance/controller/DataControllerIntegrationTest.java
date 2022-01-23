@@ -76,13 +76,13 @@ public class DataControllerIntegrationTest extends BaseControllerIntegrationTest
       final var typeOutputDto = createType(headers, TypeDto.builder().name("genericType").build());
       List<Long> idTags = new ArrayList<>();
       for (int i = 0; i < 2; i++) {
-        List<String> clone = new ArrayList<>();
-        clone.add(faker.get(i));
+        List<String> stringList = new ArrayList<>();
+        stringList.add(faker.get(i));
         final var tag =
             createTag(headers, TagDto.builder().idPerson(1L).idType(typeOutputDto.getId())
                 .name(format("Tag {0}", i))
                 .percentage(BigDecimal.valueOf(FAKER.number().numberBetween(0, 100)))
-                .texts(clone)
+                .texts(stringList)
                 .build());
         tag.setId(id + i);
         idTags.add(tag.getId());

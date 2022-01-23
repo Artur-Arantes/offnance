@@ -1,3 +1,4 @@
+
 package br.com.artur.offnance.repositories;
 
 import br.com.artur.offnance.domain.Tag;
@@ -8,7 +9,9 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 
 public interface TagRepository extends PagingAndSortingRepository<Tag, Long> {
 
-  List<Long> findAllById(Long listLong);
-
   Page<Tag> findAll(Pageable page);
+
+  Page<Tag> findAllByIdIn(List<Long> ids, Pageable page);
+
+
 }

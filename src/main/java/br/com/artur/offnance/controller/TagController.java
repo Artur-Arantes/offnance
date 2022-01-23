@@ -4,6 +4,7 @@ package br.com.artur.offnance.controller;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
+import br.com.artur.offnance.domain.dto.TagPageRequest;
 import br.com.artur.offnance.domain.TagPagedList;
 import br.com.artur.offnance.domain.User;
 import br.com.artur.offnance.domain.dto.TagDto;
@@ -12,7 +13,6 @@ import br.com.artur.offnance.service.TagService;
 import javax.servlet.http.HttpServletResponse;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,23 +41,18 @@ public class TagController {
 
   @RequestMapping(method = GET, value = "/")
   @Transactional
-  public TagPagedList findAll(@RequestParam(name = "pageNumber", required = false) int pageNumber,
-                              @RequestParam(name = "pageSize", required = false) int pageSize,
-                              @RequestParam(name = "name", required = false) String name) {
+  public TagPagedList find(@RequestParam(name = "pageNumber", required = false) int pageNumber,
+                           @RequestParam(name = "pageSize", required = false) int pageSize,
+                           @RequestParam(name = "text", required = false) String text,
+                           @RequestParam(name = "id", required = false) Long id) {
     if (pageNumber < 0) {
       pageNumber = DEFAULT_PAGE_NUMBER;
     }
     if (pageSize < 1) {
       pageSize = DEFAULT_PAGE_SIZE;
     }
-    final var page = PageRequest.of(pageNumber, pageSize);
-    final var tagPagedList = tagService.findAll(page);
+    final var page = TagPageRequest.of(pageNumber, pageSize,text,id);
+    final var tagPagedList = tagService.find(page);
     return TagPagedList.fromPageable(tagPagedList);
-  }
-
-  @RequestMapping(method = GET, value = "/find")
-  @Transactional
-  public TagOutPutDto findById(@RequestParam final Long id) {
-    return tagService.findById(id);
   }
 }

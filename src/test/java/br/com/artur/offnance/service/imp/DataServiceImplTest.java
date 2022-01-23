@@ -17,6 +17,7 @@ import br.com.artur.offnance.repositories.DataRepository;
 import br.com.artur.offnance.repositories.TagRepository;
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -115,6 +116,7 @@ public class DataServiceImplTest {
     DataDto dto = DataDto.builder()
         .name(name)
         .status(status)
+        .idTags(Collections.emptyList())
         .value(new BigDecimal(Math.random()))
         .build();
     assertThatExceptionOfType(TagNotFoundException.class).isThrownBy(() ->

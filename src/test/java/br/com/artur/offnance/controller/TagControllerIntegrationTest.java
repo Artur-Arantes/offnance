@@ -145,10 +145,10 @@ public class TagControllerIntegrationTest extends BaseControllerIntegrationTest 
   @Nested
   @DisplayName("testando o metodo find All")
   @EnableSpringDataWebSupport
-  class FindAll {
+  class Find {
 
     @Test
-    @DisplayName("testando o sucesso do metodo find all")
+    @DisplayName("testando o sucesso do metodo find")
     public void findAll_success() {
       ArrayList<String> faker = new ArrayList<>();
       final var fake = "any";
@@ -167,6 +167,8 @@ public class TagControllerIntegrationTest extends BaseControllerIntegrationTest 
       final var result = RestAssured.given().headers(headers)
           .queryParam("pageNumber", 0)
           .queryParam("pageSize", 1)
+          .queryParam("text","any")
+          .queryParam("id",1L)
           .when()
           .get("api/tags/")
           .then()
@@ -176,45 +178,6 @@ public class TagControllerIntegrationTest extends BaseControllerIntegrationTest 
 
       assertThat(result).hasSize(1).element(0).isEqualTo(tagOutPutDto);
     }
-  }
-
-
-  @Nested
-  @DisplayName(" Testando o metodo Find By Id")
-  public class FindById {
-
-    @Test
-    @DisplayName("testando o sucesso do metodo")
-    public void success() {
-      final var name = "anything";
-      ArrayList<String> faker = new ArrayList<>();
-      final var fake = "any";
-      faker.add(fake);
-      final var typeOutputDto = createType(headers, TypeDto.builder().name(
-          FAKER.harryPotter().book()
-      ).build());
-      final var dto =
-          TagDto.builder().idPerson(1L).idType(900L).name(name).percentage(new BigDecimal("1"))
-              .texts(faker)
-              .build();
-      final var tagOutPutDto =
-          createTag(headers, TagDto.builder().idPerson(1L).idType(typeOutputDto.getId())
-              .name(FAKER.harryPotter().character())
-              .texts(faker)
-              .percentage(BigDecimal.valueOf(FAKER.number().numberBetween(0, 100)))
-              .build());
-      final var result = RestAssured.given().headers(headers)
-          .body(dto)
-          .queryParam("id", 1)
-          .when()
-          .get("api/tags/find")
-          .then()
-          .statusCode(HttpStatus.OK.value())
-          .extract().jsonPath()
-          .getObject("", TagOutPutDto.class);
-      assertThat(result).isEqualTo(tagOutPutDto);
-    }
-
   }
 
 }
