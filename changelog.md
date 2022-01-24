@@ -30,3 +30,6 @@
 ## 0.9.0 TASK (#1x07d7b)
 ### feat
  - adding tagtext
+## 0.10.0 TASK (#13ltt)
+### feat
+ - refactoring code and fixing tests
