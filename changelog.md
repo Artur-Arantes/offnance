@@ -33,3 +33,6 @@
 ## 0.10.0 TASK (#13ltt)
 ### feat
  - refactoring code and fixing tests
+## 0.11.0 TASK (#1zp5f7m)
+### feat
+ - updating readme file.
