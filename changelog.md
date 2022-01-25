@@ -39,3 +39,6 @@
 ## 0.12.0 TASK (#gvhl)
 ### fix
  - adding image and updating readme
+## 0.13.0 TASK (#gvhl)
+### fix
+ - adding image and updating readme
