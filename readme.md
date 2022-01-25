@@ -2,7 +2,12 @@
 [![Coverage Status](https://coveralls.io/repos/github/Artur-Arantes/offnance/badge.svg?branch=main)](https://coveralls.io/github/Artur-Arantes/offnance?branch=main)
 [![CircleCI](https://circleci.com/gh/Artur-Arantes/offnance/tree/main.svg?style=svg)](https://circleci.com/gh/Artur-Arantes/offnance/tree/main)
 
-# Offnance
+
+
+
+
+![](/src/main/resources/images/gato.jpg)
+
 
 ## Descrição
 Offnance é um projeto que tem por escopo controle financeiro, ou seja, a ideia é largar as planilhas do Excel.
@@ -14,12 +19,13 @@ Offnance é um projeto que tem por escopo controle financeiro, ou seja, a ideia 
 >Desde a criação do diagrama de relacionamento até  agora, seguimos um método de trabalho, que é a elaboração da task pelo irmão na plataforma Clickup,  eu abro uma branch faço a task e peço o review.
 
 ##### Ferramentas usadas
-Usamos SpringBoot, Circle-ci, Heroku, Docker, Flyway, Maven, TestContainers, Assertj, Junit, Angular.
+>Usamos SpringBoot, Circle-ci, Heroku, Docker, Flyway, Maven, TestContainers, Assertj, Junit, Angular.
 
 ## Requisítos
 -----------------------
->java 11.
->plugin lombock.
+>Java 11.
+
+>Plugin Lombock.
 ----------------------
 
 
@@ -41,5 +47,6 @@ Usamos SpringBoot, Circle-ci, Heroku, Docker, Flyway, Maven, TestContainers, Ass
 ## Requirements
 ----------------------------
 > Java 11.
+
 > Plugin Lombock.
---------------
+---------------------------
