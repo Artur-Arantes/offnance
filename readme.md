@@ -10,7 +10,7 @@
 
 
 ## Descrição
-Offnance é um projeto que tem por escopo controle financeiro, ou seja, a ideia é largar as planilhas do Excel.
+>Offnance é um projeto que tem por escopo controle financeiro, ou seja, a ideia é largar as planilhas do Excel.
 
 ### Desenvolvimento
 >Offnance foi desenvolvido em parceria com meu irmão. Começamos no final de Novembro, tivemos algumas interrupções e agora estou aprendendo angular para poder fazer um bom front para o Offnance.
