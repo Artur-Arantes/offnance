@@ -36,3 +36,6 @@
 ## 0.11.0 TASK (#1zp5f7m)
 ### feat
  - updating readme file.
+## 0.12.0 TASK (#gvhl)
+### fix
+ - adding image and updating readme
